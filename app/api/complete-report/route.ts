@@ -51,10 +51,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Image expired from storage" }, { status: 404 });
     }
 
-    // 4. RUN FULL ANALYSIS WITH GOOGLE SEARCH (Gemini 1.5 Pro)
+    // 4. RUN FULL ANALYSIS (Gemini 1.5 Pro)
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-pro",
-      tools: [{ googleSearch: {} }], // Enable Google Search
+      // @ts-ignore - googleSearch is valid but not in SDK types yet
+      tools: [{ googleSearch: {} }],
     });
 
     const categoryLabels: Record<string, string> = {
