@@ -268,13 +268,13 @@ export default function ListingLens() {
           </div>
         )}
 
-     {/* ============ STEP 2: REGION ============ */}
+{/* ============ STEP 2: REGION ============ */}
         {step === 2 && (
           <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-4 px-4">
             <h2 className="text-2xl font-black tracking-tighter uppercase italic mb-8">Where are you purchasing from?</h2>
             <div className="grid grid-cols-2 gap-4 mb-8">
               {[
-                { id: 'AU', code: 'Australia', name: 'Australia' }, 
+                { id: 'AU', code: 'au', name: 'Australia' }, 
                 { id: 'NZ', code: 'nz', name: 'New Zealand' }, 
                 { id: 'UK', code: 'gb', name: 'United Kingdom' }, 
                 { id: 'SG', code: 'sg', name: 'Singapore' }, 
@@ -310,25 +310,7 @@ export default function ListingLens() {
               🌐 Global Lens
             </button>
           </div>
-        )
-                >
-                  <img 
-                    src={`https://flagcdn.com/w80/${item.code}.png`}
-                    alt={item.name}
-                    className={`w-14 h-10 object-cover rounded shadow-sm transition-all duration-300 ${
-                      selectedRegion === item.id ? '' : 'grayscale'
-                    }`}
-                  />
-                  <span className="text-sm font-black uppercase">{item.id}</span>
-                </button>
-              ))}
-            </div>
-            <button 
-              onClick={() => handleRegionSelect('GLOBAL', 'global')} 
-              className="text-sm font-black text-gray-400 uppercase tracking-widest underline underline-offset-4 transition-all hover:text-blue-600"
-            >
-              🌐 Global Lens
-            </button>
+        )}     </button>
           </div>
         )}
 
