@@ -233,11 +233,15 @@ export default function ListingLens() {
         {/* ============ STEP 1: HERO + CATEGORY ============ */}
         {step === 1 && (
           <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-8 duration-1000 px-4">
-            <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.85] mb-6">DON'T BUY<br/>BLIND<span className="text-blue-600">.</span></h1>
-            
-            <div className="mb-10">
-              <p className="text-lg font-bold text-gray-400 uppercase tracking-tight italic mb-3">Your Personal Buyer's Advocate</p>
-              <p className="text-base text-gray-500 leading-relaxed">Screenshot any listing. We'll research red flags, market value, and owner insights in seconds.</p>
+            <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.85] mb-4">DON'T BUY<br/>BLIND<span className="text-blue-600">.</span></h1>
+
+<p className="text-lg font-black text-blue-600 uppercase tracking-tight mb-4">Spot the Red Flags in Seconds.</p>
+
+<p className="text-base text-gray-500 leading-relaxed mb-4">Upload any listing screenshot. We'll research market value, common faults, and the questions you should be asking — for less than the cost of a cup of coffee.</p>
+
+<p className="text-xs text-gray-400 font-medium mb-10">Instant Analysis • No Account Needed</p>
+
+<p className="text-sm font-black text-gray-800 uppercase tracking-widest mb-4">What are you looking at buying?</p>
             </div>
 
             <p className="text-sm font-black text-blue-600 uppercase tracking-widest mb-4">Choose Category to Begin</p>
