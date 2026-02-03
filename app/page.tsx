@@ -274,7 +274,7 @@ export default function ListingLens() {
             <h2 className="text-2xl font-black tracking-tighter uppercase italic mb-8">Where are you purchasing from?</h2>
             <div className="grid grid-cols-2 gap-4 mb-8">
               {[
-                { id: 'AU', code: 'au', name: 'Australia' }, 
+                { id: 'AU', code: 'Australia', name: 'Australia' }, 
                 { id: 'NZ', code: 'nz', name: 'New Zealand' }, 
                 { id: 'UK', code: 'gb', name: 'United Kingdom' }, 
                 { id: 'SG', code: 'sg', name: 'Singapore' }, 
