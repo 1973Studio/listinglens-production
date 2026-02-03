@@ -19,6 +19,7 @@ export default function ListingLens() {
   const [selectedCategory, setSelectedCategory] = useState<Category>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [showHowModal, setShowHowModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // --- CHECK FOR STRIPE RETURN ---
@@ -197,6 +198,53 @@ export default function ListingLens() {
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'} flex flex-col selection:bg-blue-100 transition-colors duration-300`}>
       
+      {/* HOW IT WORKS MODAL */}
+      {showHowModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowHowModal(false)}
+          />
+          
+          {/* Modal */}
+          <div className={`relative w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-[2rem] p-6 shadow-2xl ${darkMode ? 'bg-gray-900 border border-gray-800' : 'bg-white'}`}>
+            {/* Close button */}
+            <button 
+              onClick={() => setShowHowModal(false)}
+              className={`absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full ${darkMode ? 'bg-gray-800 text-gray-400 hover:text-white' : 'bg-gray-100 text-gray-400 hover:text-black'} transition-colors z-10`}
+            >
+              ✕
+            </button>
+
+            <h2 className={`text-xl font-black tracking-tight mb-1 pr-10 ${darkMode ? 'text-white' : ''}`}>How It Works<span className="text-blue-600">.</span></h2>
+            <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">AI-Powered Research, Not AI-Generated Content</p>
+            
+            <div className={`space-y-3 text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              <p>
+                <strong className={darkMode ? 'text-white' : 'text-black'}>We don't make things up.</strong> Everything in your report comes from real sources — recalls, forums, reviews, market data.
+              </p>
+              <p>
+                You could find this yourself. But it would take hours searching dozens of websites and databases.
+              </p>
+              <p>
+                <strong className={darkMode ? 'text-white' : 'text-black'}>Our AI does that in seconds</strong> — like a thousand researchers working simultaneously on your behalf.
+              </p>
+              <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} italic text-xs`}>
+                The intelligence is in the searching — not in making things up.
+              </p>
+            </div>
+
+            <button 
+              onClick={() => setShowHowModal(false)}
+              className="w-full mt-6 bg-blue-600 text-white py-3 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 transition-all"
+            >
+              Got It
+            </button>
+          </div>
+        </div>
+      )}
+      
       {/* TOP BREADCRUMB */}
       <div className="fixed top-2 left-0 w-full px-6 flex justify-between z-50 pointer-events-none">
         <div className={`text-[8px] font-black uppercase tracking-[0.3em] opacity-20 ${darkMode ? 'text-white' : ''}`}>
@@ -248,9 +296,11 @@ export default function ListingLens() {
 
             <p className="text-lg font-black text-blue-600 uppercase tracking-tight mb-4">Spot the Red Flags in Seconds.</p>
 
-            <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} leading-relaxed mb-4`}>Upload any online marketplace screenshot. We'll research market value, common faults, real life experiences, and the questions you should be asking — for less than the cost of a cup of coffee.</p>
+            <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} leading-relaxed mb-4`}>Upload any listing screenshot. We'll research market value, common faults, and the questions you should be asking — for less than the cost of a cup of coffee.</p>
 
-            <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'} font-medium mb-10`}>Instant Analysis • No Account Needed</p>
+            <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'} font-medium mb-10`}>
+              Instant Analysis • No Account Needed • <button onClick={() => setShowHowModal(true)} className="text-blue-600 underline hover:text-blue-700 transition-colors">How does this work?</button>
+            </p>
 
             <p className={`text-sm font-black ${darkMode ? 'text-white' : 'text-gray-800'} uppercase tracking-widest mb-4`}>What are you looking at buying?</p>
             
@@ -682,6 +732,11 @@ export default function ListingLens() {
           <a href="/pricing" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Pricing</a>
           <a href="/about" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>About</a>
           <a href="/contact" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Contact</a>
+          <a href="/partners" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>API</a>
+        </div>
+        <div className={`flex justify-center gap-6 text-xs font-bold uppercase tracking-widest ${darkMode ? 'text-gray-700' : 'text-gray-300'} mb-6`}>
+          <a href="/privacy" className={`${darkMode ? 'hover:text-gray-500' : 'hover:text-gray-500'} transition-colors`}>Privacy</a>
+          <a href="/terms" className={`${darkMode ? 'hover:text-gray-500' : 'hover:text-gray-500'} transition-colors`}>Terms</a>
         </div>
         <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs Pty Ltd</p>
       </footer>
