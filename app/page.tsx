@@ -248,7 +248,7 @@ export default function ListingLens() {
 
             <p className="text-lg font-black text-blue-600 uppercase tracking-tight mb-4">Spot the Red Flags in Seconds.</p>
 
-            <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} leading-relaxed mb-4`}>Upload any listing screenshot. We'll research market value, common faults, and the questions you should be asking — for less than the cost of a cup of coffee.</p>
+            <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} leading-relaxed mb-4`}>Upload any online marketplace screenshot. We'll research market value, common faults, real life experiences, and the questions you should be asking — for less than the cost of a cup of coffee.</p>
 
             <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'} font-medium mb-10`}>Instant Analysis • No Account Needed</p>
 
