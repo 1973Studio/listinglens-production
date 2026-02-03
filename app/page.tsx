@@ -727,16 +727,14 @@ export default function ListingLens() {
 
       {/* FOOTER */}
       <footer className={`p-10 text-center border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-        <div className={`flex justify-center gap-8 text-sm font-black uppercase tracking-widest ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-6`}>
+        <div className={`flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold uppercase tracking-widest ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-6`}>
           <a href="/faq" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>FAQ</a>
           <a href="/pricing" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Pricing</a>
           <a href="/about" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>About</a>
           <a href="/contact" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Contact</a>
           <a href="/partners" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>API</a>
-        </div>
-        <div className={`flex justify-center gap-6 text-xs font-bold uppercase tracking-widest ${darkMode ? 'text-gray-700' : 'text-gray-300'} mb-6`}>
-          <a href="/privacy" className={`${darkMode ? 'hover:text-gray-500' : 'hover:text-gray-500'} transition-colors`}>Privacy</a>
-          <a href="/terms" className={`${darkMode ? 'hover:text-gray-500' : 'hover:text-gray-500'} transition-colors`}>Terms</a>
+          <a href="/privacy" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Privacy</a>
+          <a href="/terms" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Terms</a>
         </div>
         <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs Pty Ltd</p>
       </footer>
