@@ -268,7 +268,7 @@ export default function ListingLens() {
           </div>
         )}
 
-        {/* ============ STEP 2: REGION ============ */}
+     {/* ============ STEP 2: REGION ============ */}
         {step === 2 && (
           <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-4 px-4">
             <h2 className="text-2xl font-black tracking-tighter uppercase italic mb-8">Where are you purchasing from?</h2>
@@ -291,6 +291,26 @@ export default function ListingLens() {
                       ? 'border-blue-600 bg-blue-50' 
                       : 'border-gray-100 hover:border-blue-600'
                   }`}
+                >
+                  <img 
+                    src={`https://flagcdn.com/w80/${item.code}.png`}
+                    alt={item.name}
+                    className={`w-14 h-10 object-cover rounded shadow-sm transition-all duration-300 ${
+                      selectedRegion === item.id ? '' : 'grayscale'
+                    }`}
+                  />
+                  <span className="text-sm font-black">{item.name}</span>
+                </button>
+              ))}
+            </div>
+            <button 
+              onClick={() => handleRegionSelect('GLOBAL', 'global')} 
+              className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 transition-all"
+            >
+              🌐 Global Lens
+            </button>
+          </div>
+        )
                 >
                   <img 
                     src={`https://flagcdn.com/w80/${item.code}.png`}
