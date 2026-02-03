@@ -18,6 +18,7 @@ export default function ListingLens() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [darkMode, setDarkMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // --- CHECK FOR STRIPE RETURN ---
@@ -194,19 +195,19 @@ export default function ListingLens() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col selection:bg-blue-100">
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'} flex flex-col selection:bg-blue-100 transition-colors duration-300`}>
       
       {/* TOP BREADCRUMB */}
       <div className="fixed top-2 left-0 w-full px-6 flex justify-between z-50 pointer-events-none">
-        <div className="text-[8px] font-black uppercase tracking-[0.3em] opacity-20">
+        <div className={`text-[8px] font-black uppercase tracking-[0.3em] opacity-20 ${darkMode ? 'text-white' : ''}`}>
           {category ? `${category}` : 'ADVOCATE MODE'} {region && `• ${region}`}
         </div>
       </div>
 
       {/* HEADER */}
-      <header className="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-gray-100 px-6 py-4 flex justify-between items-center z-40">
+      <header className={`sticky top-0 ${darkMode ? 'bg-gray-900/90' : 'bg-white/90'} backdrop-blur-sm border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'} px-6 py-4 flex justify-between items-center z-40`}>
         <div className="flex items-center gap-3">
-          <span className="text-sm font-black tracking-widest uppercase">LISTING LENS</span>
+          <span className={`text-sm font-black tracking-widest uppercase ${darkMode ? 'text-white' : ''}`}>LISTING LENS</span>
           {regionFlag && regionFlag !== 'global' && (
             <img 
               src={`https://flagcdn.com/w40/${regionFlag}.png`}
@@ -215,9 +216,19 @@ export default function ListingLens() {
             />
           )}
         </div>
-        {step > 1 && step < 5 && !isProcessing && (
-          <button onClick={() => setStep(step - 1)} className="px-5 py-2 text-xs font-black border border-gray-200 rounded-full active:scale-95 transition-all">BACK</button>
-        )}
+        <div className="flex items-center gap-3">
+          {/* Dark Mode Toggle */}
+          <button 
+            onClick={() => setDarkMode(!darkMode)} 
+            className={`p-2 rounded-full transition-all ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-gray-100 text-gray-600'}`}
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+          {step > 1 && step < 5 && !isProcessing && (
+            <button onClick={() => setStep(step - 1)} className={`px-5 py-2 text-xs font-black border ${darkMode ? 'border-gray-700 text-white' : 'border-gray-200'} rounded-full active:scale-95 transition-all`}>BACK</button>
+          )}
+        </div>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
@@ -230,18 +241,18 @@ export default function ListingLens() {
           </div>
         )}
 
-{/* ============ STEP 1: HERO + CATEGORY ============ */}
+        {/* ============ STEP 1: HERO + CATEGORY ============ */}
         {step === 1 && (
           <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-8 duration-1000 px-4">
-            <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.85] mb-4">DON'T BUY<br/>BLIND<span className="text-blue-600">.</span></h1>
+            <h1 className={`text-5xl md:text-6xl font-black tracking-tighter leading-[0.85] mb-4 ${darkMode ? 'text-white' : ''}`}>DON'T BUY<br/>BLIND<span className="text-blue-600">.</span></h1>
 
             <p className="text-lg font-black text-blue-600 uppercase tracking-tight mb-4">Spot the Red Flags in Seconds.</p>
 
-            <p className="text-base text-gray-500 leading-relaxed mb-4">Upload any listing screenshot. We'll research market value, common faults, and the questions you should be asking — for less than the cost of a cup of coffee.</p>
+            <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} leading-relaxed mb-4`}>Upload any listing screenshot. We'll research market value, common faults, and the questions you should be asking — for less than the cost of a cup of coffee.</p>
 
-            <p className="text-xs text-gray-400 font-medium mb-10">Instant Analysis • No Account Needed</p>
+            <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'} font-medium mb-10`}>Instant Analysis • No Account Needed</p>
 
-            <p className="text-sm font-black text-gray-800 uppercase tracking-widest mb-4">What are you looking at buying?</p>
+            <p className={`text-sm font-black ${darkMode ? 'text-white' : 'text-gray-800'} uppercase tracking-widest mb-4`}>What are you looking at buying?</p>
             
             <div className="grid grid-cols-2 gap-4 w-full">
               {(['motors', 'property', 'marine', 'aircraft'] as const).map((cat) => (
@@ -249,7 +260,11 @@ export default function ListingLens() {
                   key={cat} 
                   onClick={() => handleCategorySelect(cat)} 
                   className={`py-6 rounded-2xl font-black text-base tracking-wider border-2 transition-all uppercase
-                    ${selectedCategory === cat ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-gray-100 hover:border-blue-600'}`}
+                    ${selectedCategory === cat 
+                      ? 'bg-blue-600 border-blue-600 text-white' 
+                      : darkMode 
+                        ? 'bg-gray-800 border-gray-700 text-white hover:border-blue-600' 
+                        : 'bg-white border-gray-100 hover:border-blue-600'}`}
                 >
                   {cat === 'motors' ? 'Vehicles' : cat}
                 </button>
@@ -261,7 +276,7 @@ export default function ListingLens() {
         {/* ============ STEP 2: REGION ============ */}
         {step === 2 && (
           <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-4 px-4">
-            <h2 className="text-2xl font-black tracking-tighter uppercase italic mb-8">Where are you purchasing from?</h2>
+            <h2 className={`text-2xl font-black tracking-tighter uppercase italic mb-8 ${darkMode ? 'text-white' : ''}`}>Where are you purchasing from?</h2>
             <div className="grid grid-cols-2 gap-4 mb-8">
               {[
                 { id: 'AU', code: 'au', name: 'Australia' }, 
@@ -276,20 +291,18 @@ export default function ListingLens() {
                 <button 
                   key={item.id} 
                   onClick={() => handleRegionSelect(item.id, item.code)} 
-                  className={`bg-white rounded-3xl p-6 flex flex-col items-center gap-3 transition-all duration-300 active:scale-95 shadow-sm border-2 ${
-                    selectedRegion === item.id 
-                      ? 'border-blue-600 bg-blue-50' 
-                      : 'border-gray-100 hover:border-blue-600'
+                  className={`group rounded-3xl p-6 flex flex-col items-center gap-3 transition-all duration-300 active:scale-95 shadow-sm border-2 ${
+                    darkMode 
+                      ? 'bg-gray-800 border-gray-700 hover:border-blue-500 hover:bg-gray-700' 
+                      : 'bg-white border-gray-100 hover:border-blue-600 hover:bg-blue-50'
                   }`}
                 >
                   <img 
                     src={`https://flagcdn.com/w80/${item.code}.png`}
                     alt={item.name}
-                    className={`w-14 h-10 object-cover rounded shadow-sm transition-all duration-300 ${
-                      selectedRegion === item.id ? '' : 'grayscale'
-                    }`}
+                    className="w-14 h-10 object-cover rounded shadow-sm transition-all duration-300 grayscale group-hover:grayscale-0"
                   />
-                  <span className="text-sm font-black">{item.name}</span>
+                  <span className={`text-sm font-black ${darkMode ? 'text-white' : ''}`}>{item.name}</span>
                 </button>
               ))}
             </div>
@@ -305,11 +318,11 @@ export default function ListingLens() {
         {/* ============ STEP 3: UPLOAD ============ */}
         {step === 3 && !isProcessing && (
           <div className="w-full max-w-md text-center animate-in fade-in px-4">
-            <h2 className="text-2xl font-black tracking-tighter uppercase italic mb-6">Upload Your Screenshot</h2>
+            <h2 className={`text-2xl font-black tracking-tighter uppercase italic mb-6 ${darkMode ? 'text-white' : ''}`}>Upload Your Screenshot</h2>
             
             <div 
               onClick={() => fileInputRef.current?.click()} 
-              className="p-10 border-2 border-dashed border-gray-200 rounded-[2rem] bg-white hover:border-blue-600 transition-all cursor-pointer"
+              className={`p-10 border-2 border-dashed ${darkMode ? 'border-gray-700 bg-gray-800 hover:border-blue-500' : 'border-gray-200 bg-white hover:border-blue-600'} rounded-[2rem] transition-all cursor-pointer`}
             >
               <input 
                 ref={fileInputRef} 
@@ -319,7 +332,7 @@ export default function ListingLens() {
                 className="hidden" 
               />
               <p className="text-base font-black text-blue-600 uppercase tracking-widest mb-3">Drop Screenshot Here</p>
-              <p className="text-sm text-gray-400 font-medium mb-6">Any listing. Any platform.</p>
+              <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'} font-medium mb-6`}>Any listing. Any platform.</p>
               
               <button
                 type="button"
@@ -330,9 +343,9 @@ export default function ListingLens() {
               </button>
             </div>
             
-            <div className="mt-6 p-5 bg-gray-50 rounded-xl text-left">
-              <p className="text-sm font-bold text-gray-500 mb-3">💡 TIPS FOR BEST RESULTS</p>
-              <ul className="text-base text-gray-500 space-y-2">
+            <div className={`mt-6 p-5 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} rounded-xl text-left`}>
+              <p className={`text-sm font-bold ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-3`}>💡 TIPS FOR BEST RESULTS</p>
+              <ul className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} space-y-2`}>
                 <li>• Include the full listing with price visible</li>
                 <li>• Make sure text is readable</li>
                 <li>• One listing per screenshot</li>
@@ -344,7 +357,7 @@ export default function ListingLens() {
         {/* ============ PROCESSING STATE ============ */}
         {isProcessing && (
           <div className="w-full max-w-md text-center py-20 animate-in fade-in">
-            <div className="w-16 h-16 border-4 border-gray-100 border-t-blue-600 rounded-full animate-spin mx-auto mb-6" />
+            <div className={`w-16 h-16 border-4 ${darkMode ? 'border-gray-700' : 'border-gray-100'} border-t-blue-600 rounded-full animate-spin mx-auto mb-6`} />
             <p className="text-sm font-black tracking-widest text-blue-600 animate-pulse uppercase">{processingMessage}</p>
           </div>
         )}
@@ -356,17 +369,17 @@ export default function ListingLens() {
             {/* Screenshot Preview */}
             {preview && (
               <div className="mb-6">
-                <img src={preview} className="w-full max-h-48 object-cover rounded-2xl border-2 border-gray-100" alt="Listing" />
+                <img src={preview} className={`w-full max-h-48 object-cover rounded-2xl border-2 ${darkMode ? 'border-gray-700' : 'border-gray-100'}`} alt="Listing" />
               </div>
             )}
 
             {/* Extracted Info Card */}
-            <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-6 mb-4">
+            <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border-2 rounded-[2rem] p-6 mb-4`}>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Listing Identified</p>
               </div>
-              <h3 className="text-xl font-black tracking-tight mb-4 italic">{teaserData.extracted?.title || 'Listing'}</h3>
+              <h3 className={`text-xl font-black tracking-tight mb-4 italic ${darkMode ? 'text-white' : ''}`}>{teaserData.extracted?.title || 'Listing'}</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-gray-400 text-[9px] font-black uppercase">Price</p>
@@ -374,12 +387,12 @@ export default function ListingLens() {
                 </div>
                 <div>
                   <p className="text-gray-400 text-[9px] font-black uppercase">Location</p>
-                  <p className="font-bold">{teaserData.extracted?.location || region}</p>
+                  <p className={`font-bold ${darkMode ? 'text-white' : ''}`}>{teaserData.extracted?.location || region}</p>
                 </div>
                 {teaserData.extracted?.specs && (
                   <div className="col-span-2">
                     <p className="text-gray-400 text-[9px] font-black uppercase">Specs</p>
-                    <p className="font-medium text-gray-700">{teaserData.extracted?.specs}</p>
+                    <p className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{teaserData.extracted?.specs}</p>
                   </div>
                 )}
               </div>
@@ -402,17 +415,17 @@ export default function ListingLens() {
             {/* Blurred Preview */}
             <div className="relative mb-6">
               <div className="space-y-3 blur-xl opacity-30 pointer-events-none select-none">
-                <div className="h-20 bg-gray-100 rounded-2xl" />
+                <div className={`h-20 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} rounded-2xl`} />
                 <div className="h-16 bg-red-100 rounded-2xl" />
                 <div className="h-16 bg-green-100 rounded-2xl" />
-                <div className="h-24 bg-gray-100 rounded-2xl" />
+                <div className={`h-24 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} rounded-2xl`} />
               </div>
               
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white/95 backdrop-blur-sm p-8 rounded-[2rem] shadow-2xl text-center border border-gray-100 max-w-sm">
+                <div className={`${darkMode ? 'bg-gray-800/95 border-gray-700' : 'bg-white/95 border-gray-100'} backdrop-blur-sm p-8 rounded-[2rem] shadow-2xl text-center border max-w-sm`}>
                   <p className="text-2xl mb-2">🔒</p>
-                  <h3 className="text-xl font-black mb-2 uppercase italic">Full Report Ready</h3>
-                  <p className="text-[11px] text-gray-500 mb-6 leading-relaxed">
+                  <h3 className={`text-xl font-black mb-2 uppercase italic ${darkMode ? 'text-white' : ''}`}>Full Report Ready</h3>
+                  <p className={`text-[11px] ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-6 leading-relaxed`}>
                     {teaserData.teaser?.hookLine || 'Unlock detailed market analysis, owner insights, red flags, and negotiation tips.'}
                   </p>
                   <button 
@@ -436,9 +449,9 @@ export default function ListingLens() {
         {/* ============ STEP 5: GENERATING FULL REPORT ============ */}
         {step === 5 && (
           <div className="w-full max-w-md text-center py-20 animate-in fade-in">
-            <div className="w-16 h-16 border-4 border-gray-50 border-t-blue-600 rounded-full animate-spin mx-auto mb-6" />
+            <div className={`w-16 h-16 border-4 ${darkMode ? 'border-gray-700' : 'border-gray-50'} border-t-blue-600 rounded-full animate-spin mx-auto mb-6`} />
             <p className="text-xs font-black tracking-[0.3em] text-blue-600 animate-pulse italic uppercase">Generating Your Report...</p>
-            <p className="text-[10px] text-gray-400 mt-2">Searching market data, recalls, and owner reviews</p>
+            <p className={`text-[10px] ${darkMode ? 'text-gray-500' : 'text-gray-400'} mt-2`}>Searching market data, recalls, and owner reviews</p>
           </div>
         )}
 
@@ -483,12 +496,12 @@ export default function ListingLens() {
 
             {/* Market Analysis */}
             {reportData.marketAnalysis && (
-              <div className="bg-gray-50 p-6 rounded-2xl">
+              <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} p-6 rounded-2xl`}>
                 <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-3">📊 Market Analysis</p>
-                <p className="text-sm font-bold mb-2">{reportData.marketAnalysis.pricePosition}</p>
-                <p className="text-xs text-gray-600">{reportData.marketAnalysis.comparables}</p>
+                <p className={`text-sm font-bold mb-2 ${darkMode ? 'text-white' : ''}`}>{reportData.marketAnalysis.pricePosition}</p>
+                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{reportData.marketAnalysis.comparables}</p>
                 {reportData.marketAnalysis.demandLevel && (
-                  <p className="text-xs text-gray-500 mt-2">Demand: {reportData.marketAnalysis.demandLevel}</p>
+                  <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'} mt-2`}>Demand: {reportData.marketAnalysis.demandLevel}</p>
                 )}
               </div>
             )}
@@ -544,21 +557,21 @@ export default function ListingLens() {
 
             {/* Owner Insights */}
             {reportData.ownerInsights && (
-              <div className="bg-gray-50 p-6 rounded-2xl">
-                <h3 className="text-xs font-black text-gray-600 uppercase tracking-widest mb-3">👥 What Owners Say</h3>
+              <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} p-6 rounded-2xl`}>
+                <h3 className={`text-xs font-black ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-widest mb-3`}>👥 What Owners Say</h3>
                 <div className="space-y-3 text-sm">
                   <div>
                     <p className="text-[9px] font-bold text-green-600 uppercase">Common Praise</p>
-                    <p className="text-gray-700">{reportData.ownerInsights.commonPraise}</p>
+                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{reportData.ownerInsights.commonPraise}</p>
                   </div>
                   <div>
                     <p className="text-[9px] font-bold text-red-600 uppercase">Common Complaints</p>
-                    <p className="text-gray-700">{reportData.ownerInsights.commonComplaints}</p>
+                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{reportData.ownerInsights.commonComplaints}</p>
                   </div>
                   {reportData.ownerInsights.reliabilityRating && (
                     <div>
                       <p className="text-[9px] font-bold text-gray-500 uppercase">Reliability</p>
-                      <p className="text-gray-700">{reportData.ownerInsights.reliabilityRating}</p>
+                      <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{reportData.ownerInsights.reliabilityRating}</p>
                     </div>
                   )}
                 </div>
@@ -567,11 +580,11 @@ export default function ListingLens() {
 
             {/* Questions for Seller */}
             {reportData.questionsForSeller?.length > 0 && (
-              <div className="bg-white p-6 rounded-2xl border-2 border-gray-100">
-                <h3 className="text-xs font-black text-gray-600 uppercase tracking-widest mb-3">❓ Ask the Seller</h3>
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl border-2`}>
+                <h3 className={`text-xs font-black ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-widest mb-3`}>❓ Ask the Seller</h3>
                 <ol className="space-y-2">
                   {reportData.questionsForSeller.map((q: string, i: number) => (
-                    <li key={i} className="text-sm text-gray-700 flex items-start gap-3">
+                    <li key={i} className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'} flex items-start gap-3`}>
                       <span className="font-black text-blue-600 text-xs">{i + 1}.</span>
                       {q}
                     </li>
@@ -582,19 +595,19 @@ export default function ListingLens() {
 
             {/* Negotiation Tips */}
             {reportData.negotiationStrategy && (
-              <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+              <div className={`${darkMode ? 'bg-blue-900/30 border-blue-800' : 'bg-blue-50 border-blue-100'} p-6 rounded-2xl border`}>
                 <h3 className="text-xs font-black text-blue-600 uppercase tracking-widest mb-4">💰 Negotiation Strategy</h3>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center bg-white p-3 rounded-xl">
-                    <span className="text-xs text-gray-500">Opening Offer</span>
+                  <div className={`flex justify-between items-center ${darkMode ? 'bg-gray-800' : 'bg-white'} p-3 rounded-xl`}>
+                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Opening Offer</span>
                     <span className="font-black text-blue-600">{reportData.negotiationStrategy.openingOffer}</span>
                   </div>
-                  <div className="flex justify-between items-center bg-white p-3 rounded-xl">
-                    <span className="text-xs text-gray-500">Target Price</span>
+                  <div className={`flex justify-between items-center ${darkMode ? 'bg-gray-800' : 'bg-white'} p-3 rounded-xl`}>
+                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Target Price</span>
                     <span className="font-black text-green-600">{reportData.negotiationStrategy.targetPrice}</span>
                   </div>
-                  <div className="flex justify-between items-center bg-white p-3 rounded-xl">
-                    <span className="text-xs text-gray-500">Walk Away If Above</span>
+                  <div className={`flex justify-between items-center ${darkMode ? 'bg-gray-800' : 'bg-white'} p-3 rounded-xl`}>
+                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Walk Away If Above</span>
                     <span className="font-black text-red-600">{reportData.negotiationStrategy.walkAwayPrice}</span>
                   </div>
                   {reportData.negotiationStrategy.leveragePoints?.length > 0 && (
@@ -602,7 +615,7 @@ export default function ListingLens() {
                       <p className="text-[9px] font-bold text-blue-600 uppercase mb-2">Leverage Points</p>
                       <ul className="space-y-1">
                         {reportData.negotiationStrategy.leveragePoints.map((point: string, i: number) => (
-                          <li key={i} className="text-sm text-blue-900 flex items-start gap-2">
+                          <li key={i} className={`text-sm ${darkMode ? 'text-blue-300' : 'text-blue-900'} flex items-start gap-2`}>
                             <span className="text-blue-400">•</span>
                             {point}
                           </li>
@@ -616,13 +629,13 @@ export default function ListingLens() {
 
             {/* Visual Analysis */}
             {reportData.visualAnalysis && (
-              <div className="bg-gray-50 p-6 rounded-2xl">
-                <h3 className="text-xs font-black text-gray-600 uppercase tracking-widest mb-3">👁️ Visual Analysis</h3>
-                <p className="text-sm font-bold mb-3">{reportData.visualAnalysis.conditionAssessment}</p>
+              <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} p-6 rounded-2xl`}>
+                <h3 className={`text-xs font-black ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-widest mb-3`}>👁️ Visual Analysis</h3>
+                <p className={`text-sm font-bold mb-3 ${darkMode ? 'text-white' : ''}`}>{reportData.visualAnalysis.conditionAssessment}</p>
                 {reportData.visualAnalysis.concernsSpotted?.length > 0 && (
                   <div className="mb-3">
                     <p className="text-[9px] font-bold text-red-600 uppercase mb-1">Issues Spotted</p>
-                    <ul className="text-sm text-gray-700 space-y-1">
+                    <ul className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'} space-y-1`}>
                       {reportData.visualAnalysis.concernsSpotted.map((concern: string, i: number) => (
                         <li key={i}>• {concern}</li>
                       ))}
@@ -632,7 +645,7 @@ export default function ListingLens() {
                 {reportData.visualAnalysis.photosNeeded?.length > 0 && (
                   <div>
                     <p className="text-[9px] font-bold text-blue-600 uppercase mb-1">Request These Photos</p>
-                    <ul className="text-sm text-gray-700 space-y-1">
+                    <ul className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'} space-y-1`}>
                       {reportData.visualAnalysis.photosNeeded.map((photo: string, i: number) => (
                         <li key={i}>📸 {photo}</li>
                       ))}
@@ -652,7 +665,7 @@ export default function ListingLens() {
               </button>
               <button 
                 onClick={reset} 
-                className="w-full py-4 border border-gray-200 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors"
+                className={`w-full py-4 border ${darkMode ? 'border-gray-700 text-gray-500 hover:text-white' : 'border-gray-200 text-gray-400 hover:text-black'} rounded-xl text-xs font-bold uppercase tracking-widest transition-colors`}
               >
                 Analyze Another Listing
               </button>
@@ -663,14 +676,14 @@ export default function ListingLens() {
       </main>
 
       {/* FOOTER */}
-      <footer className="p-10 text-center border-t border-gray-100">
-        <div className="flex justify-center gap-8 text-sm font-black uppercase tracking-widest text-gray-400 mb-6">
-          <a href="/faq" className="hover:text-black transition-colors">FAQ</a>
-          <a href="/pricing" className="hover:text-black transition-colors">Pricing</a>
-          <a href="/about" className="hover:text-black transition-colors">About</a>
-          <a href="/contact" className="hover:text-black transition-colors">Contact</a>
+      <footer className={`p-10 text-center border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+        <div className={`flex justify-center gap-8 text-sm font-black uppercase tracking-widest ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-6`}>
+          <a href="/faq" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>FAQ</a>
+          <a href="/pricing" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Pricing</a>
+          <a href="/about" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>About</a>
+          <a href="/contact" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Contact</a>
         </div>
-        <p className="text-xs font-bold text-gray-300 uppercase tracking-widest">© 2026 Listing Lens Labs Pty Ltd</p>
+        <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs Pty Ltd</p>
       </footer>
     </div>
   );
