@@ -2,7 +2,19 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
-type Category = 'property' | 'motors' | 'marine' | 'aircraft' | 'other' | null;
+type Category = 'property' | 'motors' | 'marine' | 'aircraft' | 'electronics' | 'jewelry' | 'fashion' | 'furniture' | 'other' | null;
+
+// Category background images - Unsplash (free commercial use)
+const categoryImages: Record<string, string> = {
+  motors: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80',
+  property: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+  marine: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80',
+  aircraft: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800&q=80',
+  electronics: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80',
+  jewelry: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&q=80',
+  fashion: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=80',
+  furniture: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80',
+};
 
 export default function ListingLens() {
   const [step, setStep] = useState(1);
@@ -10,6 +22,7 @@ export default function ListingLens() {
   const [region, setRegion] = useState('');
   const [regionFlag, setRegionFlag] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingMessage, setProcessingMessage] = useState('');
   const [teaserData, setTeaserData] = useState<any>(null);
@@ -17,10 +30,16 @@ export default function ListingLens() {
   const [reportData, setReportData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>(null);
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [darkMode, setDarkMode] = useState(false);
-  const [showHowModal, setShowHowModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Check for dark mode preference
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setDarkMode(prefersDark);
+    }
+  }, []);
 
   // --- CHECK FOR STRIPE RETURN ---
   useEffect(() => {
@@ -32,16 +51,21 @@ export default function ListingLens() {
     const cancelled = query.get('cancelled');
 
     if (cancelled) {
+      const savedTeaser = localStorage.getItem('ll_teaser');
       const savedCategory = localStorage.getItem('ll_category') as Category;
       const savedRegion = localStorage.getItem('ll_region');
       const savedRegionFlag = localStorage.getItem('ll_regionFlag');
+      const savedCheckoutUrl = localStorage.getItem('ll_checkoutUrl');
+      const savedPreview = localStorage.getItem('ll_preview');
 
-      if (savedCategory) {
+      if (savedTeaser) {
+        setTeaserData(JSON.parse(savedTeaser));
         setCategory(savedCategory);
         setRegion(savedRegion || 'AU');
-        setRegionFlag(savedRegionFlag || 'au');
-        setStep(1);
-        setError("Payment cancelled. Please try again.");
+        setRegionFlag(savedRegionFlag || '🇦🇺');
+        setCheckoutUrl(savedCheckoutUrl);
+        setPreview(savedPreview);
+        setStep(4);
       }
       window.history.replaceState({}, '', window.location.pathname);
       return;
@@ -51,24 +75,26 @@ export default function ListingLens() {
       const savedCategory = localStorage.getItem('ll_category') as Category;
       const savedRegion = localStorage.getItem('ll_region');
       const savedRegionFlag = localStorage.getItem('ll_regionFlag');
+      const savedPreview = localStorage.getItem('ll_preview');
 
       setCategory(savedCategory || 'motors');
       setRegion(savedRegion || 'AU');
-      setRegionFlag(savedRegionFlag || 'au');
+      setRegionFlag(savedRegionFlag || '🇦🇺');
+      setPreview(savedPreview);
       setStep(5);
       setIsProcessing(true);
       setProcessingMessage('Payment verified. Generating your full report...');
 
-      generateFullReport(sessionId);
+      generateFullReport(sessionId, savedPreview || '');
       
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
 
-  // --- GENERATE TEASER (After upload) ---
+  // --- GENERATE TEASER ---
   const generateTeaser = async (file: File) => {
     setIsProcessing(true);
-    setProcessingMessage('Reading your listing...');
+    setProcessingMessage('Analyzing your listing...');
 
     try {
       const formData = new FormData();
@@ -88,9 +114,12 @@ export default function ListingLens() {
 
       const data = await response.json();
       
+      localStorage.setItem('ll_teaser', JSON.stringify(data.teaser));
       localStorage.setItem('ll_category', category || 'motors');
       localStorage.setItem('ll_region', region);
       localStorage.setItem('ll_regionFlag', regionFlag);
+      localStorage.setItem('ll_checkoutUrl', data.checkoutUrl);
+      localStorage.setItem('ll_preview', preview || '');
 
       setTeaserData(data.teaser);
       setCheckoutUrl(data.checkoutUrl);
@@ -104,13 +133,16 @@ export default function ListingLens() {
     }
   };
 
-  // --- GENERATE FULL REPORT (After payment) ---
-  const generateFullReport = async (sessionId: string) => {
+  // --- GENERATE FULL REPORT ---
+  const generateFullReport = async (sessionId: string, imageData: string) => {
     try {
       const response = await fetch('/api/complete-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: sessionId }),
+        body: JSON.stringify({ 
+          session_id: sessionId,
+          image: imageData
+        }),
       });
 
       if (response.status === 402) {
@@ -128,9 +160,12 @@ export default function ListingLens() {
       setReportData(data);
       setStep(6);
 
+      localStorage.removeItem('ll_teaser');
       localStorage.removeItem('ll_category');
       localStorage.removeItem('ll_region');
       localStorage.removeItem('ll_regionFlag');
+      localStorage.removeItem('ll_checkoutUrl');
+      localStorage.removeItem('ll_preview');
 
     } catch (err: any) {
       console.error(err);
@@ -147,28 +182,25 @@ export default function ListingLens() {
       setCategory(cat);
       setStep(2);
       setSelectedCategory(null);
-    }, 700);
+    }, 200);
   };
 
   const handleRegionSelect = (reg: string, flag: string) => {
-    setSelectedRegion(reg);
-    setTimeout(() => {
-      setRegion(reg);
-      setRegionFlag(flag);
-      setStep(3);
-      setSelectedRegion(null);
-    }, 700);
+    setRegion(reg);
+    setRegionFlag(flag);
+    setStep(3);
   };
 
   const handleFile = (file: File) => {
     if (file && file.type.startsWith('image/')) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
-        setPreview(e.target?.result as string);
+        const result = e.target?.result as string;
+        setPreview(result);
+        generateTeaser(file);
       };
       reader.readAsDataURL(file);
-      
-      generateTeaser(file);
     }
   };
 
@@ -182,100 +214,60 @@ export default function ListingLens() {
     setStep(1);
     setCategory(null);
     setSelectedCategory(null);
-    setSelectedRegion(null);
     setRegion('');
     setRegionFlag('');
     setPreview(null);
+    setSelectedFile(null);
     setTeaserData(null);
     setCheckoutUrl(null);
     setReportData(null);
     setError(null);
+    localStorage.removeItem('ll_teaser');
     localStorage.removeItem('ll_category');
     localStorage.removeItem('ll_region');
     localStorage.removeItem('ll_regionFlag');
+    localStorage.removeItem('ll_checkoutUrl');
+    localStorage.removeItem('ll_preview');
+  };
+
+  const getCategoryLabel = (cat: Category): string => {
+    const labels: Record<string, string> = {
+      motors: 'Vehicle',
+      property: 'Property',
+      marine: 'Marine',
+      aircraft: 'Aircraft',
+      electronics: 'Electronics',
+      jewelry: 'Jewellery',
+      fashion: 'Fashion',
+      furniture: 'Furniture',
+      other: 'Item'
+    };
+    return labels[cat || 'other'] || 'Item';
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'} flex flex-col selection:bg-blue-100 transition-colors duration-300`}>
-      
-      {/* HOW IT WORKS MODAL */}
-      {showHowModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setShowHowModal(false)}
-          />
-          
-          {/* Modal */}
-          <div className={`relative w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-[2rem] p-6 shadow-2xl ${darkMode ? 'bg-gray-900 border border-gray-800' : 'bg-white'}`}>
-            {/* Close button */}
-            <button 
-              onClick={() => setShowHowModal(false)}
-              className={`absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full ${darkMode ? 'bg-gray-800 text-gray-400 hover:text-white' : 'bg-gray-100 text-gray-400 hover:text-black'} transition-colors z-10`}
-            >
-              ✕
-            </button>
-
-            <h2 className={`text-xl font-black tracking-tight mb-1 pr-10 ${darkMode ? 'text-white' : ''}`}>How It Works<span className="text-blue-600">.</span></h2>
-            <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">AI-Powered Research, Not AI-Generated Content</p>
-            
-            <div className={`space-y-3 text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              <p>
-                <strong className={darkMode ? 'text-white' : 'text-black'}>We don't make things up.</strong> Everything in your report comes from real sources — recalls, forums, reviews, market data.
-              </p>
-              <p>
-                You could find this yourself. But it would take hours searching dozens of websites and databases.
-              </p>
-              <p>
-                <strong className={darkMode ? 'text-white' : 'text-black'}>Our AI does that in seconds</strong> — like a thousand researchers working simultaneously on your behalf.
-              </p>
-              <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} italic text-xs`}>
-                The intelligence is in the searching — not in making things up.
-              </p>
-            </div>
-
-            <button 
-              onClick={() => setShowHowModal(false)}
-              className="w-full mt-6 bg-blue-600 text-white py-3 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 transition-all"
-            >
-              Got It
-            </button>
-          </div>
-        </div>
-      )}
+    <div className={`min-h-screen flex flex-col selection:bg-blue-100 ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
       
       {/* TOP BREADCRUMB */}
       <div className="fixed top-2 left-0 w-full px-6 flex justify-between z-50 pointer-events-none">
-        <div className={`text-[8px] font-black uppercase tracking-[0.3em] opacity-20 ${darkMode ? 'text-white' : ''}`}>
-          {category ? `${category}` : 'ADVOCATE MODE'} {region && `• ${region}`}
+        <div className={`text-[8px] font-black uppercase tracking-[0.3em] ${darkMode ? 'opacity-30' : 'opacity-20'}`}>
+          {category ? getCategoryLabel(category) : 'ADVOCATE MODE'} {region && `• ${region}`}
         </div>
       </div>
 
       {/* HEADER */}
-      <header className={`sticky top-0 ${darkMode ? 'bg-gray-900/90' : 'bg-white/90'} backdrop-blur-sm border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'} px-6 py-4 flex justify-between items-center z-40`}>
+      <header className={`sticky top-0 backdrop-blur-sm border-b px-6 py-4 flex justify-between items-center z-40 ${darkMode ? 'bg-gray-900/90 border-gray-800' : 'bg-white/90 border-gray-100'}`}>
+        <button onClick={reset} className="text-sm font-black tracking-widest uppercase">LISTING LENS</button>
         <div className="flex items-center gap-3">
-          <span className={`text-sm font-black tracking-widest uppercase ${darkMode ? 'text-white' : ''}`}>LISTING LENS</span>
-          {regionFlag && regionFlag !== 'global' && (
-            <img 
-              src={`https://flagcdn.com/w40/${regionFlag}.png`}
-              alt={region}
-              className="w-6 h-4 object-cover rounded shadow-sm"
-            />
+          {step > 1 && step < 5 && !isProcessing && (
+            <button onClick={() => setStep(step - 1)} className={`px-5 py-2 text-xs font-black border rounded-full active:scale-95 transition-all ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>BACK</button>
           )}
-        </div>
-        <div className="flex items-center gap-3">
-          {/* Dark Mode Toggle */}
           <button 
             onClick={() => setDarkMode(!darkMode)} 
-            className={`p-2 rounded-full transition-all ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-gray-100 text-gray-600'}`}
-            aria-label="Toggle dark mode"
+            className={`p-2 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}
           >
             {darkMode ? '☀️' : '🌙'}
           </button>
-          {step > 1 && step < 5 && !isProcessing && (
-            <button onClick={() => setStep(step - 1)} className={`px-5 py-2 text-xs font-black border ${darkMode ? 'border-gray-700 text-white' : 'border-gray-200'} rounded-full active:scale-95 transition-all`}>BACK</button>
-          )}
         </div>
       </header>
 
@@ -283,109 +275,145 @@ export default function ListingLens() {
         
         {/* ERROR DISPLAY */}
         {error && (
-          <div className="w-full max-w-md mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-center">
-            <p className="text-sm text-red-700">{error}</p>
-            <button onClick={() => { setError(null); reset(); }} className="mt-2 text-xs text-red-500 underline">Start Over</button>
+          <div className={`w-full max-w-md mb-6 p-4 rounded-2xl text-center ${darkMode ? 'bg-red-900/50 border border-red-700' : 'bg-red-50 border border-red-200'}`}>
+            <p className={`text-sm ${darkMode ? 'text-red-300' : 'text-red-700'}`}>{error}</p>
+            <button onClick={() => { setError(null); reset(); }} className={`mt-2 text-xs underline ${darkMode ? 'text-red-400' : 'text-red-500'}`}>Start Over</button>
           </div>
         )}
 
         {/* ============ STEP 1: HERO + CATEGORY ============ */}
         {step === 1 && (
-          <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-8 duration-1000 px-4">
-            <h1 className={`text-5xl md:text-6xl font-black tracking-tighter leading-[0.85] mb-4 ${darkMode ? 'text-white' : ''}`}>DON'T BUY<br/>BLIND<span className="text-blue-600">.</span></h1>
+          <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <h1 className="text-5xl font-black tracking-tighter leading-[0.85] mb-4">DON'T BUY<br/>BLIND<span className="text-blue-600">.</span></h1>
+            
+            <div className="mb-8">
+              <p className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your AI-Powered Buyer's Advocate</p>
+              <p className={`text-xs leading-relaxed px-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                Screenshot any listing. We'll research red flags, market value, and expert insights in seconds.
+              </p>
+            </div>
 
-            <p className="text-lg font-black text-blue-600 uppercase tracking-tight mb-4">Spot the Red Flags in Seconds.</p>
-
-            <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} leading-relaxed mb-4`}>Upload any listing screenshot. We'll research market value, common faults, and the questions you should be asking — for less than the cost of a cup of coffee.</p>
-
-            <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'} font-medium mb-10`}>
-              Instant Analysis • No Account Needed • <button onClick={() => setShowHowModal(true)} className="text-blue-600 underline hover:text-blue-700 transition-colors">How does this work?</button>
+            <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+              Select Category
             </p>
 
-            <p className={`text-sm font-black ${darkMode ? 'text-white' : 'text-gray-800'} uppercase tracking-widest mb-4`}>What are you looking at buying?</p>
-            
-            <div className="grid grid-cols-2 gap-4 w-full mb-4">
-              {(['motors', 'property', 'marine', 'aircraft'] as const).map((cat) => (
+            {/* Premium Image-Backed Category Grid */}
+            <div className="grid grid-cols-2 gap-3 w-full mb-4">
+              {[
+                { id: 'motors', label: 'Vehicles' },
+                { id: 'property', label: 'Property' },
+                { id: 'marine', label: 'Marine' },
+                { id: 'aircraft', label: 'Aircraft' },
+                { id: 'electronics', label: 'Electronics' },
+                { id: 'jewelry', label: 'Jewellery' },
+                { id: 'fashion', label: 'Fashion' },
+                { id: 'furniture', label: 'Furniture' },
+              ].map((item) => (
                 <button 
-                  key={cat} 
-                  onClick={() => handleCategorySelect(cat)} 
-                  className={`py-6 rounded-2xl font-black text-base tracking-wider border-2 transition-all uppercase
-                    ${selectedCategory === cat 
-                      ? 'bg-blue-600 border-blue-600 text-white' 
-                      : darkMode 
-                        ? 'bg-gray-800 border-gray-700 text-white hover:border-blue-600' 
-                        : 'bg-white border-gray-100 hover:border-blue-600'}`}
+                  key={item.id} 
+                  onClick={() => handleCategorySelect(item.id as Category)} 
+                  className={`relative overflow-hidden rounded-2xl h-24 group transition-all duration-300 ${
+                    selectedCategory === item.id ? 'scale-95 ring-2 ring-blue-500' : 'hover:scale-[1.02]'
+                  }`}
                 >
-                  {cat === 'motors' ? 'Vehicles' : cat}
+                  {/* Background Image */}
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                    style={{ backgroundImage: `url(${categoryImages[item.id]})` }}
+                  />
+                  
+                  {/* Dark Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/70 transition-all duration-300" />
+                  
+                  {/* Text */}
+                  <div className="absolute inset-0 flex items-end justify-start p-4">
+                    <span className="text-white font-black text-sm uppercase tracking-wider drop-shadow-lg">
+                      {item.label}
+                    </span>
+                  </div>
+                  
+                  {/* Subtle border */}
+                  <div className={`absolute inset-0 rounded-2xl border transition-colors ${
+                    selectedCategory === item.id 
+                      ? 'border-blue-500' 
+                      : 'border-white/10 group-hover:border-white/30'
+                  }`} />
                 </button>
               ))}
             </div>
 
-            {/* Everything Else */}
+            {/* Everything Else - Minimal/Text Only */}
             <button 
               onClick={() => handleCategorySelect('other')} 
-              className={`w-full py-4 rounded-2xl font-bold text-sm tracking-wider border-2 transition-all
-                ${selectedCategory === 'other' 
-                  ? 'bg-blue-600 border-blue-600 text-white' 
+              className={`w-full py-4 rounded-2xl font-medium text-sm tracking-wide border transition-all ${
+                selectedCategory === 'other' 
+                  ? 'bg-blue-600 border-blue-600 text-white scale-95' 
                   : darkMode 
-                    ? 'bg-gray-800 border-gray-700 text-gray-400 hover:border-blue-600 hover:text-white' 
-                    : 'bg-gray-50 border-gray-100 text-gray-400 hover:border-blue-600 hover:text-gray-800'}`}
+                    ? 'border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white' 
+                    : 'border-gray-200 text-gray-400 hover:border-gray-400 hover:text-gray-700'
+              }`}
             >
-              🔍 Everything Else <span className="font-normal">— consoles, jewellery, watches, furniture & more</span>
+              Everything Else
             </button>
+            
+            <p className={`text-[10px] mt-3 ${darkMode ? 'text-gray-600' : 'text-gray-300'}`}>
+              Collectibles · Instruments · Tools · Art · More
+            </p>
           </div>
         )}
 
         {/* ============ STEP 2: REGION ============ */}
         {step === 2 && (
-          <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-4 px-4">
-            <h2 className={`text-2xl font-black tracking-tighter uppercase italic mb-8 ${darkMode ? 'text-white' : ''}`}>Where are you purchasing from?</h2>
-            <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-4">
+            <h2 className="text-xl font-black tracking-tight mb-2">Where are you buying?</h2>
+            <p className={`text-xs mb-8 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>We'll tailor market data to your region</p>
+            
+            <div className="grid grid-cols-2 gap-3 md:gap-4 mb-8">
               {[
-                { id: 'AU', code: 'au', name: 'Australia' }, 
-                { id: 'NZ', code: 'nz', name: 'New Zealand' }, 
-                { id: 'UK', code: 'gb', name: 'United Kingdom' }, 
-                { id: 'SG', code: 'sg', name: 'Singapore' }, 
-                { id: 'CA', code: 'ca', name: 'Canada' }, 
-                { id: 'HK', code: 'hk', name: 'Hong Kong' }, 
-                { id: 'KR', code: 'kr', name: 'South Korea' }, 
-                { id: 'JP', code: 'jp', name: 'Japan' }
+                { id: 'AU', flag: '🇦🇺', name: 'Australia' }, 
+                { id: 'NZ', flag: '🇳🇿', name: 'New Zealand' }, 
+                { id: 'UK', flag: '🇬🇧', name: 'United Kingdom' }, 
+                { id: 'US', flag: '🇺🇸', name: 'United States' }, 
+                { id: 'CA', flag: '🇨🇦', name: 'Canada' }, 
+                { id: 'SG', flag: '🇸🇬', name: 'Singapore' }, 
+                { id: 'JP', flag: '🇯🇵', name: 'Japan' }, 
+                { id: 'EU', flag: '🇪🇺', name: 'Europe' }
               ].map((item) => (
                 <button 
                   key={item.id} 
-                  onClick={() => handleRegionSelect(item.id, item.code)} 
-                  className={`group rounded-3xl p-6 flex flex-col items-center gap-3 transition-all duration-300 active:scale-95 shadow-sm border-2 ${
+                  onClick={() => handleRegionSelect(item.id, item.flag)} 
+                  className={`rounded-2xl p-5 flex items-center gap-3 transition-all active:scale-95 border ${
                     darkMode 
-                      ? 'bg-gray-800 border-gray-700 hover:border-blue-500 hover:bg-gray-700' 
-                      : 'bg-white border-gray-100 hover:border-blue-600 hover:bg-blue-50'
+                      ? 'bg-gray-800 border-gray-700 hover:border-blue-500' 
+                      : 'bg-white border-gray-100 hover:border-blue-500 shadow-sm'
                   }`}
                 >
-                  <img 
-                    src={`https://flagcdn.com/w80/${item.code}.png`}
-                    alt={item.name}
-                    className="w-14 h-10 object-cover rounded shadow-sm transition-all duration-300 grayscale group-hover:grayscale-0"
-                  />
-                  <span className={`text-sm font-black ${darkMode ? 'text-white' : ''}`}>{item.name}</span>
+                  <span className="text-2xl">{item.flag}</span>
+                  <span className="text-sm font-bold">{item.name}</span>
                 </button>
               ))}
             </div>
+            
             <button 
-              onClick={() => handleRegionSelect('GLOBAL', 'global')} 
-              className="bg-blue-600 text-white px-8 py-3 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 transition-all"
+              onClick={() => handleRegionSelect('GLOBAL', '🌍')} 
+              className={`text-xs font-medium ${darkMode ? 'text-gray-500 hover:text-white' : 'text-gray-400 hover:text-black'} transition-colors`}
             >
-              🌐 Global Lens
+              🌍 Global / Other Region
             </button>
           </div>
         )}
 
         {/* ============ STEP 3: UPLOAD ============ */}
         {step === 3 && !isProcessing && (
-          <div className="w-full max-w-md text-center animate-in fade-in px-4">
-            <h2 className={`text-2xl font-black tracking-tighter uppercase italic mb-6 ${darkMode ? 'text-white' : ''}`}>Upload Your Screenshot</h2>
+          <div className="w-full max-w-md text-center animate-in fade-in">
+            <h2 className="text-xl font-black tracking-tight mb-2">Upload Your Screenshot</h2>
+            <p className={`text-xs mb-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Any listing from any platform</p>
             
             <div 
               onClick={() => fileInputRef.current?.click()} 
-              className={`p-10 border-2 border-dashed ${darkMode ? 'border-gray-700 bg-gray-800 hover:border-blue-500' : 'border-gray-200 bg-white hover:border-blue-600'} rounded-[2rem] transition-all cursor-pointer`}
+              className={`p-12 border-2 border-dashed rounded-3xl hover:border-blue-500 transition-all cursor-pointer ${
+                darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-gray-50'
+              }`}
             >
               <input 
                 ref={fileInputRef} 
@@ -394,21 +422,20 @@ export default function ListingLens() {
                 onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} 
                 className="hidden" 
               />
-              <p className="text-base font-black text-blue-600 uppercase tracking-widest mb-3">Drop Screenshot Here</p>
-              <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'} font-medium mb-6`}>Any listing. Any platform.</p>
               
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                className="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold text-base tracking-wider hover:bg-blue-700 transition-colors"
-              >
-                TAP TO UPLOAD
-              </button>
+              <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                <svg className={`w-8 h-8 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              
+              <p className={`text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Drop screenshot here</p>
+              <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>or tap to browse</p>
             </div>
             
-            <div className={`mt-6 p-5 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} rounded-xl text-left`}>
-              <p className={`text-sm font-bold ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-3`}>💡 TIPS FOR BEST RESULTS</p>
-              <ul className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} space-y-2`}>
+            <div className={`mt-6 p-4 rounded-xl text-left ${darkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+              <p className={`text-[10px] font-bold mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>TIPS FOR BEST RESULTS</p>
+              <ul className={`text-[11px] space-y-1 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                 <li>• Include the full listing with price visible</li>
                 <li>• Make sure text is readable</li>
                 <li>• One listing per screenshot</li>
@@ -420,8 +447,8 @@ export default function ListingLens() {
         {/* ============ PROCESSING STATE ============ */}
         {isProcessing && (
           <div className="w-full max-w-md text-center py-20 animate-in fade-in">
-            <div className={`w-16 h-16 border-4 ${darkMode ? 'border-gray-700' : 'border-gray-100'} border-t-blue-600 rounded-full animate-spin mx-auto mb-6`} />
-            <p className="text-sm font-black tracking-widest text-blue-600 animate-pulse uppercase">{processingMessage}</p>
+            <div className={`w-16 h-16 border-4 border-t-blue-600 rounded-full animate-spin mx-auto mb-6 ${darkMode ? 'border-gray-700' : 'border-gray-100'}`} />
+            <p className="text-sm font-medium text-blue-600 animate-pulse">{processingMessage}</p>
           </div>
         )}
 
@@ -432,78 +459,69 @@ export default function ListingLens() {
             {/* Screenshot Preview */}
             {preview && (
               <div className="mb-6">
-                <img src={preview} className={`w-full max-h-48 object-cover rounded-2xl border-2 ${darkMode ? 'border-gray-700' : 'border-gray-100'}`} alt="Listing" />
+                <img src={preview} className={`w-full max-h-48 object-cover rounded-2xl border ${darkMode ? 'border-gray-700' : 'border-gray-100'}`} alt="Listing" />
               </div>
             )}
 
             {/* Extracted Info Card */}
-            <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border-2 rounded-[2rem] p-6 mb-4`}>
+            <div className={`rounded-2xl p-6 mb-4 border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100 shadow-sm'}`}>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Listing Identified</p>
+                <p className={`text-[10px] font-medium uppercase tracking-wider ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Listing Identified</p>
               </div>
-              <h3 className={`text-xl font-black tracking-tight mb-4 italic ${darkMode ? 'text-white' : ''}`}>{teaserData.extracted?.title || 'Listing'}</h3>
+              <h3 className="text-lg font-bold mb-4">{teaserData.extracted?.title || 'Listing'}</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-400 text-[9px] font-black uppercase">Price</p>
-                  <p className="font-black text-blue-600">{teaserData.extracted?.price || 'N/A'}</p>
+                  <p className={`text-[10px] font-medium uppercase ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Price</p>
+                  <p className="font-bold text-blue-600">{teaserData.extracted?.price || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-gray-400 text-[9px] font-black uppercase">Location</p>
-                  <p className={`font-bold ${darkMode ? 'text-white' : ''}`}>{teaserData.extracted?.location || region}</p>
+                  <p className={`text-[10px] font-medium uppercase ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Location</p>
+                  <p className="font-medium">{teaserData.extracted?.location || region}</p>
                 </div>
-                {teaserData.extracted?.specs && (
-                  <div className="col-span-2">
-                    <p className="text-gray-400 text-[9px] font-black uppercase">Specs</p>
-                    <p className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{teaserData.extracted?.specs}</p>
-                  </div>
-                )}
               </div>
             </div>
 
             {/* Teaser Insights */}
             <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-6 rounded-2xl mb-4">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[9px] font-black uppercase tracking-widest opacity-70">Initial Scan</p>
+                <p className="text-[10px] font-medium uppercase tracking-wider opacity-70">Initial Scan</p>
                 <div className="bg-white/20 px-3 py-1 rounded-full">
-                  <span className="text-xs font-black">{teaserData.teaser?.flagCount || 0} concerns found</span>
+                  <span className="text-xs font-bold">{teaserData.teaser?.flagCount || 0} flags found</span>
                 </div>
               </div>
-              <p className="text-sm font-bold mb-2">📊 {teaserData.teaser?.marketPosition || 'Market analysis available'}</p>
+              <p className="text-sm font-medium mb-2">📊 {teaserData.teaser?.marketPosition || 'Market analysis available'}</p>
               {teaserData.teaser?.knownIssue && (
-                <p className="text-sm opacity-90">🔧 {teaserData.teaser.knownIssue}</p>
+                <p className="text-sm opacity-90">⚠️ {teaserData.teaser.knownIssue}</p>
               )}
             </div>
 
-            {/* Blurred Preview */}
+            {/* Blurred Preview / Paywall */}
             <div className="relative mb-6">
               <div className="space-y-3 blur-xl opacity-30 pointer-events-none select-none">
-                <div className={`h-20 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} rounded-2xl`} />
-                <div className="h-16 bg-red-100 rounded-2xl" />
-                <div className="h-16 bg-green-100 rounded-2xl" />
-                <div className={`h-24 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} rounded-2xl`} />
+                <div className={`h-20 rounded-2xl ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`} />
+                <div className={`h-16 rounded-2xl ${darkMode ? 'bg-red-900' : 'bg-red-100'}`} />
+                <div className={`h-16 rounded-2xl ${darkMode ? 'bg-green-900' : 'bg-green-100'}`} />
               </div>
               
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className={`${darkMode ? 'bg-gray-800/95 border-gray-700' : 'bg-white/95 border-gray-100'} backdrop-blur-sm p-8 rounded-[2rem] shadow-2xl text-center border max-w-sm`}>
-                  <p className="text-2xl mb-2">🔒</p>
-                  <h3 className={`text-xl font-black mb-2 uppercase italic ${darkMode ? 'text-white' : ''}`}>Full Report Ready</h3>
-                  <p className={`text-[11px] ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-6 leading-relaxed`}>
-                    {teaserData.teaser?.hookLine || 'Unlock detailed market analysis, owner insights, red flags, and negotiation tips.'}
+                <div className={`backdrop-blur-sm p-8 rounded-2xl shadow-2xl text-center border max-w-sm ${darkMode ? 'bg-gray-800/95 border-gray-700' : 'bg-white/95 border-gray-100'}`}>
+                  <h3 className="text-lg font-bold mb-2">Full Report Ready</h3>
+                  <p className={`text-xs mb-6 leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {teaserData.teaser?.hookLine || 'Unlock detailed market analysis, red flags, and negotiation tips.'}
                   </p>
                   <button 
                     onClick={handlePay} 
-                    className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.3em] shadow-xl active:scale-95 transition-all mb-3"
+                    className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-all mb-3"
                   >
-                    Unlock — $3.95
+                    Unlock Report — $3.95
                   </button>
-                  <p className="text-[9px] text-gray-400">Secure payment via Stripe · Less than a coffee ☕</p>
+                  <p className={`text-[10px] ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Secure payment via Stripe</p>
                 </div>
               </div>
             </div>
 
-            {/* Start Over */}
-            <button onClick={reset} className="w-full py-3 text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors">
+            <button onClick={reset} className={`w-full py-3 text-xs font-medium transition-colors ${darkMode ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'}`}>
               ← Analyze a different listing
             </button>
           </div>
@@ -512,91 +530,102 @@ export default function ListingLens() {
         {/* ============ STEP 5: GENERATING FULL REPORT ============ */}
         {step === 5 && (
           <div className="w-full max-w-md text-center py-20 animate-in fade-in">
-            <div className={`w-16 h-16 border-4 ${darkMode ? 'border-gray-700' : 'border-gray-50'} border-t-blue-600 rounded-full animate-spin mx-auto mb-6`} />
-            <p className="text-xs font-black tracking-[0.3em] text-blue-600 animate-pulse italic uppercase">Generating Your Report...</p>
-            <p className={`text-[10px] ${darkMode ? 'text-gray-500' : 'text-gray-400'} mt-2`}>Searching market data, recalls, and owner reviews</p>
+            <div className={`w-16 h-16 border-4 border-t-blue-600 rounded-full animate-spin mx-auto mb-6 ${darkMode ? 'border-gray-700' : 'border-gray-100'}`} />
+            <p className="text-sm font-medium text-blue-600 animate-pulse">Generating Your Report...</p>
+            <p className={`text-xs mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Researching market data and expert insights</p>
           </div>
         )}
 
         {/* ============ STEP 6: FULL REPORT ============ */}
         {step === 6 && reportData && (
-          <div className="w-full max-w-lg space-y-6 animate-in fade-in">
+          <div className="w-full max-w-lg space-y-4 animate-in fade-in">
             
             {/* Header Card */}
-            <div className="bg-black text-white p-8 rounded-[2rem] shadow-xl">
+            <div className="bg-black text-white p-6 rounded-2xl">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
-                  <h2 className="text-xl font-black uppercase italic leading-tight">{reportData.extracted?.title || 'Listing Analysis'}</h2>
+                  <h2 className="text-lg font-bold leading-tight">{reportData.extracted?.title || 'Listing Analysis'}</h2>
                   <p className="text-gray-400 text-xs mt-1">{reportData.extracted?.location}</p>
                 </div>
                 <div className="text-right ml-4">
-                  <p className="text-4xl font-black text-blue-500">{reportData.verdict?.score || '—'}</p>
-                  <p className="text-[9px] uppercase tracking-widest text-gray-500">Score</p>
+                  <p className="text-3xl font-black text-blue-500">{reportData.verdict?.score || '—'}</p>
+                  <p className="text-[9px] uppercase tracking-wider text-gray-500">Score</p>
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-800">
                 <div>
-                  <p className="text-[9px] text-gray-500 uppercase">Listed Price</p>
-                  <p className="font-black text-lg">{reportData.extracted?.price || 'N/A'}</p>
+                  <p className="text-[9px] text-gray-500 uppercase">Listed</p>
+                  <p className="font-bold">{reportData.extracted?.price || 'N/A'}</p>
                 </div>
                 <div>
                   <p className="text-[9px] text-gray-500 uppercase">Fair Value</p>
-                  <p className="font-black text-lg text-blue-400">{reportData.marketAnalysis?.fairValueRange || 'N/A'}</p>
+                  <p className="font-bold text-blue-400">{reportData.marketAnalysis?.fairValueRange || 'N/A'}</p>
                 </div>
               </div>
             </div>
 
             {/* Verdict */}
-            <div className="bg-blue-600 text-white p-6 rounded-2xl">
-              <p className="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2">The Verdict</p>
-              <p className="text-xl font-black uppercase">{reportData.verdict?.recommendation || 'ANALYSIS COMPLETE'}</p>
+            <div className="bg-blue-600 text-white p-5 rounded-2xl">
+              <p className="text-[9px] font-medium uppercase tracking-wider opacity-60 mb-1">Verdict</p>
+              <p className="text-lg font-bold uppercase">{reportData.verdict?.recommendation || 'ANALYSIS COMPLETE'}</p>
               <p className="text-sm opacity-90 mt-2">{reportData.verdict?.summary}</p>
-              {reportData.verdict?.bottomLine && (
-                <p className="text-xs opacity-70 mt-3 italic">"{reportData.verdict.bottomLine}"</p>
-              )}
             </div>
 
             {/* Market Analysis */}
             {reportData.marketAnalysis && (
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} p-6 rounded-2xl`}>
-                <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-3">📊 Market Analysis</p>
-                <p className={`text-sm font-bold mb-2 ${darkMode ? 'text-white' : ''}`}>{reportData.marketAnalysis.pricePosition}</p>
+              <div className={`p-5 rounded-2xl ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                <p className={`text-[9px] font-medium uppercase tracking-wider mb-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>Market Analysis</p>
+                <p className="text-sm font-medium mb-1">{reportData.marketAnalysis.pricePosition}</p>
                 <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{reportData.marketAnalysis.comparables}</p>
-                {reportData.marketAnalysis.demandLevel && (
-                  <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'} mt-2`}>Demand: {reportData.marketAnalysis.demandLevel}</p>
-                )}
+              </div>
+            )}
+
+            {/* Authenticity Check */}
+            {reportData.authenticityCheck && (
+              <div className={`p-5 rounded-2xl border ${
+                reportData.authenticityCheck.riskLevel === 'HIGH' 
+                  ? darkMode ? 'bg-red-900/30 border-red-700' : 'bg-red-50 border-red-200'
+                  : reportData.authenticityCheck.riskLevel === 'MEDIUM'
+                    ? darkMode ? 'bg-yellow-900/30 border-yellow-700' : 'bg-yellow-50 border-yellow-200'
+                    : darkMode ? 'bg-green-900/30 border-green-700' : 'bg-green-50 border-green-200'
+              }`}>
+                <p className={`text-[9px] font-medium uppercase tracking-wider mb-2 ${
+                  reportData.authenticityCheck.riskLevel === 'HIGH' ? 'text-red-600' : 
+                  reportData.authenticityCheck.riskLevel === 'MEDIUM' ? 'text-yellow-600' : 'text-green-600'
+                }`}>
+                  Authenticity — {reportData.authenticityCheck.riskLevel} Risk
+                </p>
+                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{reportData.authenticityCheck.whatToVerify}</p>
               </div>
             )}
 
             {/* Recalls */}
             {reportData.recalls && (
-              <div className={`p-6 rounded-2xl border ${reportData.recalls.active ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}>
-                <p className={`text-[9px] font-bold uppercase tracking-widest mb-2 ${reportData.recalls.active ? 'text-red-600' : 'text-green-600'}`}>
-                  {reportData.recalls.active ? '⚠️ Recall Notice' : '✅ Recall Check'}
+              <div className={`p-5 rounded-2xl border ${reportData.recalls.active 
+                ? darkMode ? 'bg-red-900/30 border-red-700' : 'bg-red-50 border-red-200'
+                : darkMode ? 'bg-green-900/30 border-green-700' : 'bg-green-50 border-green-200'
+              }`}>
+                <p className={`text-[9px] font-medium uppercase tracking-wider mb-2 ${reportData.recalls.active ? 'text-red-600' : 'text-green-600'}`}>
+                  {reportData.recalls.active ? 'Recall Notice' : 'No Active Recalls'}
                 </p>
-                <p className={`text-sm ${reportData.recalls.active ? 'text-red-900' : 'text-green-900'}`}>{reportData.recalls.details}</p>
+                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{reportData.recalls.details}</p>
               </div>
             )}
 
             {/* Concerns */}
             {reportData.concerns?.length > 0 && (
-              <div className="bg-red-50 p-6 rounded-2xl border border-red-100">
-                <h3 className="text-xs font-black text-red-600 uppercase tracking-widest mb-4">🚩 Concerns</h3>
+              <div className={`p-5 rounded-2xl border ${darkMode ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-100'}`}>
+                <p className="text-[9px] font-medium text-red-600 uppercase tracking-wider mb-3">Concerns</p>
                 <ul className="space-y-3">
                   {reportData.concerns.map((item: any, i: number) => (
                     <li key={i} className="text-sm">
-                      <div className="flex items-start gap-2">
-                        <span className={`text-[9px] font-black px-2 py-0.5 rounded ${
-                          item.severity === 'HIGH' ? 'bg-red-200 text-red-700' : 
-                          item.severity === 'MEDIUM' ? 'bg-orange-200 text-orange-700' : 
-                          'bg-yellow-200 text-yellow-700'
-                        }`}>{item.severity}</span>
-                        <div>
-                          <p className="font-bold text-red-900">{item.issue}</p>
-                          <p className="text-xs text-red-700 mt-1">{item.detail}</p>
-                        </div>
-                      </div>
+                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded mr-2 ${
+                        item.severity === 'HIGH' ? 'bg-red-200 text-red-700' : 
+                        item.severity === 'MEDIUM' ? 'bg-orange-200 text-orange-700' : 'bg-yellow-200 text-yellow-700'
+                      }`}>{item.severity}</span>
+                      <span className={`font-medium ${darkMode ? 'text-red-300' : 'text-red-900'}`}>{item.issue}</span>
+                      <p className={`text-xs mt-1 ${darkMode ? 'text-red-400' : 'text-red-700'}`}>{item.detail}</p>
                     </li>
                   ))}
                 </ul>
@@ -605,50 +634,27 @@ export default function ListingLens() {
 
             {/* Positives */}
             {reportData.positives?.length > 0 && (
-              <div className="bg-green-50 p-6 rounded-2xl border border-green-100">
-                <h3 className="text-xs font-black text-green-600 uppercase tracking-widest mb-4">✅ Positives</h3>
-                <ul className="space-y-3">
+              <div className={`p-5 rounded-2xl border ${darkMode ? 'bg-green-900/20 border-green-800' : 'bg-green-50 border-green-100'}`}>
+                <p className="text-[9px] font-medium text-green-600 uppercase tracking-wider mb-3">Positives</p>
+                <ul className="space-y-2">
                   {reportData.positives.map((item: any, i: number) => (
                     <li key={i} className="text-sm">
-                      <p className="font-bold text-green-900">{item.point}</p>
-                      <p className="text-xs text-green-700 mt-1">{item.detail}</p>
+                      <span className={`font-medium ${darkMode ? 'text-green-300' : 'text-green-900'}`}>{item.point}</span>
+                      <p className={`text-xs mt-1 ${darkMode ? 'text-green-400' : 'text-green-700'}`}>{item.detail}</p>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
 
-            {/* Owner Insights */}
-            {reportData.ownerInsights && (
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} p-6 rounded-2xl`}>
-                <h3 className={`text-xs font-black ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-widest mb-3`}>👥 What Owners Say</h3>
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <p className="text-[9px] font-bold text-green-600 uppercase">Common Praise</p>
-                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{reportData.ownerInsights.commonPraise}</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-bold text-red-600 uppercase">Common Complaints</p>
-                    <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{reportData.ownerInsights.commonComplaints}</p>
-                  </div>
-                  {reportData.ownerInsights.reliabilityRating && (
-                    <div>
-                      <p className="text-[9px] font-bold text-gray-500 uppercase">Reliability</p>
-                      <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{reportData.ownerInsights.reliabilityRating}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
             {/* Questions for Seller */}
             {reportData.questionsForSeller?.length > 0 && (
-              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} p-6 rounded-2xl border-2`}>
-                <h3 className={`text-xs font-black ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-widest mb-3`}>❓ Ask the Seller</h3>
+              <div className={`p-5 rounded-2xl border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
+                <p className={`text-[9px] font-medium uppercase tracking-wider mb-3 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>Ask the Seller</p>
                 <ol className="space-y-2">
                   {reportData.questionsForSeller.map((q: string, i: number) => (
-                    <li key={i} className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'} flex items-start gap-3`}>
-                      <span className="font-black text-blue-600 text-xs">{i + 1}.</span>
+                    <li key={i} className={`text-sm flex items-start gap-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <span className="font-bold text-blue-600 text-xs">{i + 1}.</span>
                       {q}
                     </li>
                   ))}
@@ -657,64 +663,17 @@ export default function ListingLens() {
             )}
 
             {/* Negotiation Tips */}
-            {reportData.negotiationStrategy && (
-              <div className={`${darkMode ? 'bg-blue-900/30 border-blue-800' : 'bg-blue-50 border-blue-100'} p-6 rounded-2xl border`}>
-                <h3 className="text-xs font-black text-blue-600 uppercase tracking-widest mb-4">💰 Negotiation Strategy</h3>
-                <div className="space-y-3">
-                  <div className={`flex justify-between items-center ${darkMode ? 'bg-gray-800' : 'bg-white'} p-3 rounded-xl`}>
-                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Opening Offer</span>
-                    <span className="font-black text-blue-600">{reportData.negotiationStrategy.openingOffer}</span>
-                  </div>
-                  <div className={`flex justify-between items-center ${darkMode ? 'bg-gray-800' : 'bg-white'} p-3 rounded-xl`}>
-                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Target Price</span>
-                    <span className="font-black text-green-600">{reportData.negotiationStrategy.targetPrice}</span>
-                  </div>
-                  <div className={`flex justify-between items-center ${darkMode ? 'bg-gray-800' : 'bg-white'} p-3 rounded-xl`}>
-                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Walk Away If Above</span>
-                    <span className="font-black text-red-600">{reportData.negotiationStrategy.walkAwayPrice}</span>
-                  </div>
-                  {reportData.negotiationStrategy.leveragePoints?.length > 0 && (
-                    <div className="mt-3">
-                      <p className="text-[9px] font-bold text-blue-600 uppercase mb-2">Leverage Points</p>
-                      <ul className="space-y-1">
-                        {reportData.negotiationStrategy.leveragePoints.map((point: string, i: number) => (
-                          <li key={i} className={`text-sm ${darkMode ? 'text-blue-300' : 'text-blue-900'} flex items-start gap-2`}>
-                            <span className="text-blue-400">•</span>
-                            {point}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Visual Analysis */}
-            {reportData.visualAnalysis && (
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-gray-50'} p-6 rounded-2xl`}>
-                <h3 className={`text-xs font-black ${darkMode ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-widest mb-3`}>👁️ Visual Analysis</h3>
-                <p className={`text-sm font-bold mb-3 ${darkMode ? 'text-white' : ''}`}>{reportData.visualAnalysis.conditionAssessment}</p>
-                {reportData.visualAnalysis.concernsSpotted?.length > 0 && (
-                  <div className="mb-3">
-                    <p className="text-[9px] font-bold text-red-600 uppercase mb-1">Issues Spotted</p>
-                    <ul className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'} space-y-1`}>
-                      {reportData.visualAnalysis.concernsSpotted.map((concern: string, i: number) => (
-                        <li key={i}>• {concern}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {reportData.visualAnalysis.photosNeeded?.length > 0 && (
-                  <div>
-                    <p className="text-[9px] font-bold text-blue-600 uppercase mb-1">Request These Photos</p>
-                    <ul className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'} space-y-1`}>
-                      {reportData.visualAnalysis.photosNeeded.map((photo: string, i: number) => (
-                        <li key={i}>📸 {photo}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+            {reportData.negotiationTips?.length > 0 && (
+              <div className={`p-5 rounded-2xl border ${darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-100'}`}>
+                <p className="text-[9px] font-medium text-blue-600 uppercase tracking-wider mb-3">Negotiation Leverage</p>
+                <ul className="space-y-2">
+                  {reportData.negotiationTips.map((tip: string, i: number) => (
+                    <li key={i} className={`text-sm flex items-start gap-2 ${darkMode ? 'text-blue-200' : 'text-blue-900'}`}>
+                      <span className="text-blue-400">•</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
 
@@ -722,13 +681,15 @@ export default function ListingLens() {
             <div className="space-y-3 pt-4">
               <button 
                 onClick={() => window.print()} 
-                className="w-full bg-black text-white py-4 rounded-xl font-bold text-xs uppercase tracking-widest"
+                className="w-full bg-black text-white py-4 rounded-xl font-bold text-sm"
               >
                 Save / Print Report
               </button>
               <button 
                 onClick={reset} 
-                className={`w-full py-4 border ${darkMode ? 'border-gray-700 text-gray-500 hover:text-white' : 'border-gray-200 text-gray-400 hover:text-black'} rounded-xl text-xs font-bold uppercase tracking-widest transition-colors`}
+                className={`w-full py-4 border rounded-xl text-sm font-medium transition-colors ${
+                  darkMode ? 'border-gray-700 text-gray-500 hover:text-white' : 'border-gray-200 text-gray-400 hover:text-black'
+                }`}
               >
                 Analyze Another Listing
               </button>
@@ -739,17 +700,16 @@ export default function ListingLens() {
       </main>
 
       {/* FOOTER */}
-      <footer className={`p-10 text-center border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-        <div className={`flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold uppercase tracking-widest ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-6`}>
-          <a href="/faq" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>FAQ</a>
-          <a href="/pricing" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Pricing</a>
-          <a href="/about" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>About</a>
-          <a href="/contact" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Contact</a>
-          <a href="/partners" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>API</a>
-          <a href="/privacy" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Privacy</a>
-          <a href="/terms" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Terms</a>
+      <footer className={`p-8 text-center border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+        <div className={`flex flex-wrap justify-center gap-6 text-xs mb-4 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+          <a href="/faq" className="hover:underline">FAQ</a>
+          <a href="/pricing" className="hover:underline">Pricing</a>
+          <a href="/about" className="hover:underline">About</a>
+          <a href="/contact" className="hover:underline">Contact</a>
+          <a href="/privacy" className="hover:underline">Privacy</a>
+          <a href="/terms" className="hover:underline">Terms</a>
         </div>
-        <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs Pty Ltd</p>
+        <p className={`text-[10px] ${darkMode ? 'text-gray-700' : 'text-gray-300'}`}>© 2026 Listing Lens Labs Pty Ltd</p>
       </footer>
     </div>
   );
