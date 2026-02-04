@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
-type Category = 'property' | 'motors' | 'marine' | 'aircraft' | null;
+type Category = 'property' | 'motors' | 'marine' | 'aircraft' | 'other' | null;
 
 export default function ListingLens() {
   const [step, setStep] = useState(1);
@@ -304,7 +304,7 @@ export default function ListingLens() {
 
             <p className={`text-sm font-black ${darkMode ? 'text-white' : 'text-gray-800'} uppercase tracking-widest mb-4`}>What are you looking at buying?</p>
             
-            <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="grid grid-cols-2 gap-4 w-full mb-4">
               {(['motors', 'property', 'marine', 'aircraft'] as const).map((cat) => (
                 <button 
                   key={cat} 
@@ -320,6 +320,19 @@ export default function ListingLens() {
                 </button>
               ))}
             </div>
+
+            {/* Everything Else */}
+            <button 
+              onClick={() => handleCategorySelect('other')} 
+              className={`w-full py-4 rounded-2xl font-bold text-sm tracking-wider border-2 transition-all
+                ${selectedCategory === 'other' 
+                  ? 'bg-blue-600 border-blue-600 text-white' 
+                  : darkMode 
+                    ? 'bg-gray-800 border-gray-700 text-gray-400 hover:border-blue-600 hover:text-white' 
+                    : 'bg-gray-50 border-gray-100 text-gray-400 hover:border-blue-600 hover:text-gray-800'}`}
+            >
+              🔍 Everything Else <span className="font-normal">— consoles, jewellery, watches, furniture & more</span>
+            </button>
           </div>
         )}
 
