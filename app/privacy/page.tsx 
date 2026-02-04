@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-export default function Terms() {
+export default function Privacy() {
   const [darkMode, setDarkMode] = useState(false);
 
   return (
@@ -30,116 +30,102 @@ export default function Terms() {
           
           {/* HERO */}
           <div className="text-center mb-12">
-            <p className="text-xs font-black text-blue-600 uppercase tracking-[0.3em] mb-4">Terms & Conditions</p>
+            <p className="text-xs font-black text-blue-600 uppercase tracking-[0.3em] mb-4">Privacy Policy</p>
             <h1 className={`text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-6 ${darkMode ? 'text-white' : ''}`}>
-              The Fine Print<span className="text-blue-600">.</span>
+              Privacy First<span className="text-blue-600">.</span><br/>By Design.
             </h1>
             <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Plain English. No surprises.
+              We built Listing Lens to know as little about you as possible. Here's exactly what we collect — and what we don't.
             </p>
           </div>
 
-          {/* SECTIONS */}
-          <div className="space-y-8">
+          {/* THE DIFFERENCE */}
+          <div className={`p-8 rounded-[2rem] mb-10 ${darkMode ? 'bg-blue-900/20 border border-blue-800' : 'bg-blue-50 border border-blue-100'}`}>
+            <h2 className="text-xs font-black text-blue-600 uppercase tracking-[0.2em] mb-4">Why We're Different</h2>
+            <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Most websites demand your email before you can do anything. They want you to "Sign in with Google" or create an account just to see a price. We think that's backwards. You came here to analyse a listing, not to hand over your personal data. So we don't ask for it.
+            </p>
+          </div>
 
-            {/* 1. THE SERVICE */}
-            <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-              <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>1. What We Do</h2>
-              <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Listing Lens provides AI-powered analysis of marketplace listings. You upload a screenshot, we extract information and research market data, known issues, and other relevant details to help you make informed purchasing decisions. Our reports cover vehicles, property, marine, and aircraft listings.
-              </p>
+          {/* WHAT WE DON'T COLLECT */}
+          <div className={`p-8 rounded-[2rem] mb-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>What We Don't Collect</h2>
+            <div className="space-y-4">
+              {[
+                { item: 'Your name', note: 'We never ask for it' },
+                { item: 'Your email address', note: 'No account required' },
+                { item: 'Your phone number', note: 'Not needed' },
+                { item: 'Your uploaded screenshots', note: 'Processed and discarded' },
+                { item: 'Your generated reports', note: 'Not stored on our servers' },
+                { item: 'Your payment card details', note: 'Handled entirely by Stripe' },
+                { item: 'Tracking cookies', note: 'No third-party trackers' },
+              ].map((row, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-green-500 text-lg">✗</span>
+                  <span className={`font-bold ${darkMode ? 'text-white' : ''}`}>{row.item}</span>
+                  <span className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>— {row.note}</span>
+                </div>
+              ))}
             </div>
+          </div>
 
-            {/* 2. NOT PROFESSIONAL ADVICE */}
-            <div className={`p-8 rounded-[2rem] border-2 ${darkMode ? 'bg-gray-800 border-orange-800' : 'bg-orange-50 border-orange-200'}`}>
-              <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 text-orange-600`}>2. Important Disclaimer</h2>
-              <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                <strong>Listing Lens is not a substitute for professional inspection.</strong> While we strive for accuracy, we cannot guarantee the completeness or correctness of any analysis.
-              </p>
-              <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Before making any significant purchase, you should always: conduct your own research, arrange a professional inspection (mechanical, building, marine survey, etc.), verify claims made by the seller, and obtain independent valuations where appropriate.
-              </p>
-            </div>
-
-            {/* 3. HOW AI IS USED */}
-            <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-blue-900/20 border border-blue-800' : 'bg-blue-50 border border-blue-100'}`}>
-              <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 text-blue-600`}>3. How We Use AI</h2>
-              <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                <strong>AI doesn't create our information — it finds it.</strong> Everything in your report comes from real, publicly available sources: manufacturer recalls, owner forums, review sites, market listings, and industry data.
-              </p>
-              <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                You could find this information yourself. It's all out there. But it would take you hours of searching across dozens of websites, forums, and databases. Our AI does that research in seconds — like having a thousand people searching the internet simultaneously on your behalf.
-              </p>
-              <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                The AI reads your screenshot, identifies what you're looking at, then searches for relevant recalls, known issues, owner complaints, market prices, and red flags. It compiles what it finds into a structured report. The intelligence is in the searching and organising — not in making things up.
-              </p>
-            </div>
-
-            {/* 4. PAYMENT */}
-            <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-              <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>4. Payment & Refunds</h2>
-              <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Reports are purchased individually at the price displayed at checkout. Payment is processed securely via Stripe. All prices are in Australian Dollars (AUD) unless otherwise stated.
-              </p>
-              <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Due to the instant-delivery nature of digital reports, refunds are generally not available once a report has been generated. If you experience a technical issue that prevents you from receiving your report, contact us and we'll make it right.
-              </p>
-            </div>
-
-            {/* 5. YOUR RESPONSIBILITIES */}
-            <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-              <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>5. Your Responsibilities</h2>
-              <div className={`text-sm leading-relaxed space-y-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                <p>By using Listing Lens, you agree to:</p>
-                <p>• Upload only screenshots of listings you have a legitimate interest in analysing</p>
-                <p>• Not use the service for any unlawful purpose</p>
-                <p>• Not attempt to reverse-engineer, scrape, or abuse our systems</p>
-                <p>• Not resell or redistribute reports without permission</p>
+          {/* WHAT WE DO COLLECT */}
+          <div className={`p-8 rounded-[2rem] mb-10 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>What We Do Collect</h2>
+            <div className="space-y-6">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-blue-500 text-lg">•</span>
+                  <span className={`font-bold ${darkMode ? 'text-white' : ''}`}>IP Address</span>
+                </div>
+                <p className={`text-sm ml-7 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Collected automatically when you visit any website. We use this for basic security, abuse prevention, and to understand which countries our users come from (in aggregate). We don't link it to any personal identity.
+                </p>
+              </div>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-blue-500 text-lg">•</span>
+                  <span className={`font-bold ${darkMode ? 'text-white' : ''}`}>Basic Analytics</span>
+                </div>
+                <p className={`text-sm ml-7 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Page views and general usage patterns to help us improve the service. No personal identification.
+                </p>
               </div>
             </div>
+          </div>
 
-            {/* 6. INTELLECTUAL PROPERTY */}
-            <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-              <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>6. Intellectual Property</h2>
-              <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                The Listing Lens name, logo, website design, and report formats are owned by Listing Lens Labs Pty Ltd. When you purchase a report, you receive a personal, non-transferable licence to use that report for your own decision-making purposes.
-              </p>
-            </div>
+          {/* STRIPE */}
+          <div className={`p-8 rounded-[2rem] mb-10 border-2 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Payment Processing</h2>
+            <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              When you purchase a report, you're redirected to <strong>Stripe</strong> — a trusted, PCI-compliant payment processor used by millions of businesses worldwide. Stripe collects your payment details directly. We never see your card number, and Stripe doesn't share your personal information with us.
+            </p>
+            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              For more information, see <a href="https://stripe.com/au/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Stripe's Privacy Policy</a>.
+            </p>
+          </div>
 
-            {/* 7. LIMITATION OF LIABILITY */}
-            <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-              <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>7. Limitation of Liability</h2>
-              <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                To the maximum extent permitted by law, Listing Lens Labs Pty Ltd is not liable for any indirect, incidental, or consequential damages arising from your use of our service or reliance on our reports.
-              </p>
-              <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Our total liability for any claim is limited to the amount you paid for the specific report in question.
-              </p>
-            </div>
+          {/* DATA RETENTION */}
+          <div className={`p-8 rounded-[2rem] mb-10 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Data Retention</h2>
+            <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Screenshots you upload are processed in real-time and are not stored after your report is generated. Reports are delivered directly to you and are not retained on our servers. If you want to keep your report, save it or print it — we won't have a copy.
+            </p>
+          </div>
 
-            {/* 8. AUSTRALIAN LAW */}
-            <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-              <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>8. Governing Law</h2>
-              <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                These terms are governed by the laws of the Australian Capital Territory, Australia. Any disputes will be resolved in the courts of the ACT.
-              </p>
-            </div>
-
-            {/* 9. CHANGES */}
-            <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-              <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>9. Changes to Terms</h2>
-              <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                We may update these terms from time to time. Continued use of the service after changes constitutes acceptance of the new terms. We'll update the "last updated" date below when changes are made.
-              </p>
-            </div>
-
+          {/* FUTURE CHANGES */}
+          <div className={`p-8 rounded-[2rem] mb-10 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Future Features</h2>
+            <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              We may introduce optional accounts in the future for users who want to save their reports. This will always be opt-in. If we ever change how we handle data, we'll update this policy and make it clear.
+            </p>
           </div>
 
           {/* CONTACT */}
-          <div className="text-center mt-12">
+          <div className="text-center">
             <h2 className={`text-lg font-black mb-2 ${darkMode ? 'text-white' : ''}`}>Questions?</h2>
             <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-4`}>
-              If anything's unclear, just ask.
+              If you have any questions about our privacy practices, get in touch.
             </p>
             <a href="mailto:hello@listinglens.app" className="text-blue-600 font-bold text-sm">hello@listinglens.app</a>
           </div>
