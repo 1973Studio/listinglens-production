@@ -19,6 +19,7 @@ export default function ListingLens() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -264,13 +265,16 @@ export default function ListingLens() {
             
             <div className="mb-8">
               <p className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your Personal Online Buyer's Advocate</p>
-              <p className={`text-xs leading-relaxed px-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                Screenshot any listing. We'll research red flags, market value, and expert insights in seconds.
+              <p className={`text-lg leading-relaxed px-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                Screenshot any listing. Get the red flags, fair value, and questions you should be asking — for less than the cost of a cup of coffee.
+              </p>
+              <p className={`text-sm mt-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                Instant Analysis · No Account Needed · <button onClick={() => setShowHowItWorks(true)} className="text-blue-600 underline underline-offset-2 hover:text-blue-500">How does this work?</button>
               </p>
             </div>
 
-            <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-              What are you looking at?
+            <p className={`text-sm font-black uppercase tracking-[0.15em] mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-800'}`}>
+              What are you looking at buying?
             </p>
 
             {/* Simple Accessible Category Buttons */}
@@ -327,13 +331,13 @@ export default function ListingLens() {
             <div className="grid grid-cols-2 gap-3 mb-8">
               {[
                 { id: 'AU', flag: '🇦🇺', name: 'Australia' }, 
-                { id: 'NZ', flag: '🇳🇿', name: 'New Zealand' }, 
-                { id: 'UK', flag: '🇬🇧', name: 'United Kingdom' }, 
-                { id: 'US', flag: '🇺🇸', name: 'United States' }, 
                 { id: 'CA', flag: '🇨🇦', name: 'Canada' }, 
-                { id: 'SG', flag: '🇸🇬', name: 'Singapore' }, 
+                { id: 'HK', flag: '🇭🇰', name: 'Hong Kong' }, 
                 { id: 'JP', flag: '🇯🇵', name: 'Japan' }, 
-                { id: 'EU', flag: '🇪🇺', name: 'Europe' }
+                { id: 'NZ', flag: '🇳🇿', name: 'New Zealand' }, 
+                { id: 'SG', flag: '🇸🇬', name: 'Singapore' }, 
+                { id: 'KR', flag: '🇰🇷', name: 'South Korea' }, 
+                { id: 'UK', flag: '🇬🇧', name: 'United Kingdom' }
               ].map((item) => (
                 <button 
                   key={item.id} 
@@ -638,17 +642,72 @@ export default function ListingLens() {
 
       </main>
 
+      {/* HOW IT WORKS MODAL */}
+      {showHowItWorks && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6" onClick={() => setShowHowItWorks(false)}>
+          <div 
+            className={`w-full max-w-md rounded-3xl p-8 relative ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button 
+              onClick={() => setShowHowItWorks(false)}
+              className={`absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full ${darkMode ? 'bg-gray-700 text-gray-400 hover:text-white' : 'bg-gray-100 text-gray-400 hover:text-gray-600'}`}
+            >
+              ✕
+            </button>
+
+            {/* Title */}
+            <h2 className="text-2xl font-black mb-1">
+              How It Works<span className="text-blue-600">.</span>
+            </h2>
+            
+            {/* Subtitle */}
+            <p className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-6">
+              AI-Powered Research, Not AI-Generated Content
+            </p>
+
+            {/* Body */}
+            <div className={`space-y-4 text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              <p>
+                <span className={`font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>We don't make things up.</span> Everything in your report comes from real sources — recalls, forums, reviews, market data.
+              </p>
+              <p>
+                You could find this yourself. But it would take hours searching dozens of websites and databases.
+              </p>
+              <p>
+                <span className={`font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Our AI does that in seconds</span> — like a thousand researchers working simultaneously on your behalf.
+              </p>
+              <p className={`italic ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                The intelligence is in the searching — not in making things up.
+              </p>
+            </div>
+
+            {/* Got It Button */}
+            <button 
+              onClick={() => setShowHowItWorks(false)}
+              className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wider mt-8 active:scale-95 transition-transform"
+            >
+              Got It
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* FOOTER */}
       <footer className={`p-8 text-center border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-        <div className={`flex flex-wrap justify-center gap-6 text-xs mb-4 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+        <div className={`flex flex-wrap justify-center gap-8 text-sm font-bold uppercase tracking-wider mb-3 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
           <a href="/faq" className="hover:underline">FAQ</a>
           <a href="/pricing" className="hover:underline">Pricing</a>
           <a href="/about" className="hover:underline">About</a>
           <a href="/contact" className="hover:underline">Contact</a>
+          <a href="/api" className="hover:underline">API</a>
+        </div>
+        <div className={`flex flex-wrap justify-center gap-8 text-sm font-bold uppercase tracking-wider mb-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
           <a href="/privacy" className="hover:underline">Privacy</a>
           <a href="/terms" className="hover:underline">Terms</a>
         </div>
-        <p className={`text-[10px] ${darkMode ? 'text-gray-700' : 'text-gray-300'}`}>© 2026 Listing Lens Labs Pty Ltd</p>
+        <p className={`text-xs ${darkMode ? 'text-gray-700' : 'text-gray-300'}`}>© 2026 Listing Lens</p>
       </footer>
     </div>
   );
