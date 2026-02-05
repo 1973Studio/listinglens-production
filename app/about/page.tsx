@@ -5,6 +5,10 @@ import React, { useState } from 'react';
 export default function About() {
   const [darkMode, setDarkMode] = useState(false);
 
+  const cardBg = darkMode ? '#18181b' : '#ffffff';
+  const border = darkMode ? '#27272a' : '#e7e5e4';
+  const muted = darkMode ? '#a1a1aa' : '#78716c';
+
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'} flex flex-col selection:bg-blue-100 transition-colors duration-300`}>
       
@@ -99,7 +103,7 @@ export default function About() {
       {/* FOOTER */}
       <footer style={{ backgroundColor: cardBg, borderTop: '1px solid ' + border, padding: '24px 0' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 24, fontSize: 14 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 24, fontSize: 14 }}>
             {[
               { label: 'FAQ', href: '/faq' },
               { label: 'Pricing', href: '/pricing' },
@@ -113,9 +117,10 @@ export default function About() {
             ))}
           </div>
           <p style={{ textAlign: 'center', fontSize: 12, marginTop: 16, color: muted }}>
-            {"\u00A9 2026 Listing Lens"}
+            © 2026 Listing Lens
           </p>
         </div>
       </footer>
+    </div>
   );
 }
