@@ -6,6 +6,10 @@ export default function FAQ() {
   const [darkMode, setDarkMode] = useState(false);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  const cardBg = darkMode ? '#18181b' : '#ffffff';
+  const border = darkMode ? '#27272a' : '#e7e5e4';
+  const muted = darkMode ? '#a1a1aa' : '#78716c';
+
   const faqs = [
     {
       question: "What is Listing Lens?",
@@ -21,7 +25,7 @@ export default function FAQ() {
     },
     {
       question: "How much does it cost?",
-      answer: "Each report costs $3.95 AUD. No subscription, no account needed. Just pay for what you use."
+      answer: "Each report costs $4.99 AUD. No subscription, no account needed. Just pay for what you use."
     },
     {
       question: "Do I need to create an account?",
@@ -29,11 +33,11 @@ export default function FAQ() {
     },
     {
       question: "What categories do you cover?",
-      answer: "We currently analyse listings for vehicles (cars, motorcycles, trucks), property (houses, apartments, land), marine (boats, jet skis, yachts), and aircraft. More categories coming soon."
+      answer: "We currently analyse listings for vehicles (cars, motorcycles, trucks), property (houses, apartments, land), electronics, fashion, watches & jewellery, and everything else including furniture, instruments, tools, and collectibles."
     },
     {
       question: "Which countries do you support?",
-      answer: "We support listings from Australia, New Zealand, United Kingdom, Canada, Singapore, Hong Kong, Japan, and South Korea. You can also select 'Global' for listings from other regions."
+      answer: "We fully support listings from Australia, New Zealand, and Singapore. You can also select 'Rest of World' (beta) for listings from other regions — your report will use global sources."
     },
     {
       question: "What information is in a report?",
@@ -45,7 +49,7 @@ export default function FAQ() {
     },
     {
       question: "What happens to my screenshot after I upload it?",
-      answer: "Screenshots are processed in real-time and are not stored after your report is generated. We don't keep copies of your uploads or your reports. Privacy is built into how we operate."
+      answer: "Screenshots are processed in real-time and automatically deleted within 5 minutes. We don't keep copies of your uploads or your reports. Privacy is built into how we operate."
     },
     {
       question: "Can I get a refund?",
@@ -53,7 +57,7 @@ export default function FAQ() {
     },
     {
       question: "How do I contact support?",
-      answer: "Email us at hello@listinglens.app — we're happy to help with any questions or issues."
+      answer: "Use our contact form or email us at hello@listinglens.app — we're happy to help with any questions or issues."
     }
   ];
 
@@ -134,17 +138,25 @@ export default function FAQ() {
       </main>
 
       {/* FOOTER */}
-      <footer className={`p-10 text-center border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-        <div className={`flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold uppercase tracking-widest ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-6`}>
-          <a href="/faq" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>FAQ</a>
-          <a href="/pricing" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Pricing</a>
-          <a href="/about" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>About</a>
-          <a href="/contact" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Contact</a>
-          <a href="/partners" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>API</a>
-          <a href="/privacy" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Privacy</a>
-          <a href="/terms" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Terms</a>
+      <footer style={{ backgroundColor: cardBg, borderTop: '1px solid ' + border, padding: '24px 0' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 24, fontSize: 14 }}>
+            {[
+              { label: 'FAQ', href: '/faq' },
+              { label: 'Pricing', href: '/pricing' },
+              { label: 'About', href: '/about' },
+              { label: 'API', href: '/partners' },
+              { label: 'Privacy', href: '/privacy' },
+              { label: 'Terms', href: '/terms' },
+              { label: 'Say Hello', href: '/contact' },
+            ].map(l => (
+              <a key={l.label} href={l.href} style={{ color: muted, textDecoration: 'none' }}>{l.label}</a>
+            ))}
+          </div>
+          <p style={{ textAlign: 'center', fontSize: 12, marginTop: 16, color: muted }}>
+            © 2026 Listing Lens
+          </p>
         </div>
-        <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs Pty Ltd</p>
       </footer>
     </div>
   );
