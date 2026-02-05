@@ -4,4 +4,3 @@
 
 [build.environment]
   NETLIFY_NEXTJS_SKIP_PREPROCESS_FORMS = "true"
-  NEXT_USE_NETLIFY_EDGE = "true"
