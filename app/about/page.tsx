@@ -117,6 +117,5 @@ export default function About() {
           </p>
         </div>
       </footer>
-    </div>
   );
 }
