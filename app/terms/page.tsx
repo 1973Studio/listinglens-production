@@ -90,7 +90,7 @@ export default function Terms() {
             <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
               <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>4. Payment & Refunds</h2>
               <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Reports are purchased individually at the price displayed at checkout (currently $4.99 AUD). Payment is processed securely via Stripe. All prices are in Australian Dollars (AUD) unless otherwise stated.
+                Reports are purchased individually at $5 in your local currency (e.g., $5 AUD, $5 USD, £5 GBP, €5 EUR, $5 NZD, $5 SGD). Payment is processed securely via Stripe.
               </p>
               <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 Due to the instant-delivery nature of digital reports, refunds are generally not available once a report has been generated. If you experience a technical issue that prevents you from receiving your report, contact us and we'll make it right.
