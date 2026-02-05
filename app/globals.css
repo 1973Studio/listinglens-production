@@ -35,6 +35,28 @@ html, body {
   to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
 .animate-in {
   animation-duration: 500ms;
   animation-fill-mode: both;
