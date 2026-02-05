@@ -97,17 +97,25 @@ export default function About() {
       </main>
 
       {/* FOOTER */}
-      <footer className={`p-10 text-center border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-        <div className={`flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold uppercase tracking-widest ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-6`}>
-          <a href="/faq" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>FAQ</a>
-          <a href="/pricing" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Pricing</a>
-          <a href="/about" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>About</a>
-          <a href="/contact" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Contact</a>
-          <a href="/api" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>API</a>
-          <a href="/privacy" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Privacy</a>
-          <a href="/terms" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Terms</a>
+      <footer style={{ backgroundColor: cardBg, borderTop: '1px solid ' + border, padding: '24px 0' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 24, fontSize: 14 }}>
+            {[
+              { label: 'FAQ', href: '/faq' },
+              { label: 'Pricing', href: '/pricing' },
+              { label: 'About', href: '/about' },
+              { label: 'API', href: '/partners' },
+              { label: 'Privacy', href: '/privacy' },
+              { label: 'Terms', href: '/terms' },
+              { label: 'Say Hello', href: '/contact' },
+            ].map(l => (
+              <a key={l.label} href={l.href} style={{ color: muted, textDecoration: 'none' }}>{l.label}</a>
+            ))}
+          </div>
+          <p style={{ textAlign: 'center', fontSize: 12, marginTop: 16, color: muted }}>
+            {"\u00A9 2026 Listing Lens"}
+          </p>
         </div>
-        <p className={`text-xs ${darkMode ? 'text-gray-700' : 'text-gray-300'}`}>© 2026 Listing Lens</p>
       </footer>
     </div>
   );
