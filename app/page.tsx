@@ -48,36 +48,34 @@ function ZapIcon() {
 function GlobeIcon() {
   return <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>;
 }
+function CameraIcon({ size = 20 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>;
+}
 
 // ============================================
 // FLAG COMPONENT
 // ============================================
 
-function Flag({ region, size = 20 }: { region: { code: string; name: string }; size?: number }) {
+function Flag({ code, name, size = 20 }: { code: string; name: string; size?: number }) {
   const flagMap: Record<string, string> = {
-    AU: 'au', NZ: 'nz', SG: 'sg', HK: 'hk', IN: 'in',
-    PH: 'ph', TH: 'th', KR: 'kr', JP: 'jp', EU: 'eu',
-    NA: 'us',
+    AU: 'au',
+    NZ: 'nz',
+    SG: 'sg',
   };
-  const countryCode = flagMap[region.code];
+  const countryCode = flagMap[code];
   if (countryCode) {
     return (
       <img
         src={`https://flagcdn.com/w40/${countryCode}.png`}
-        alt={region.name}
+        alt={name}
         width={size * 1.33}
         height={size}
         style={{ borderRadius: 2, objectFit: 'cover', display: 'inline-block', verticalAlign: 'middle' }}
       />
     );
   }
-  // Globe emoji fallback for catch-all regions
-  const globes: Record<string, string> = {
-    APAC: '\u{1F30F}',
-    SA: '\u{1F30E}',
-    MEA: '\u{1F30D}',
-  };
-  return <span style={{ fontSize: size, lineHeight: 1, verticalAlign: 'middle' }}>{globes[region.code] || '\u{1F310}'}</span>;
+  // Globe for Rest of World
+  return <span style={{ fontSize: size, lineHeight: 1, verticalAlign: 'middle' }}>{"\u{1F310}"}</span>;
 }
 
 // ============================================
@@ -93,34 +91,12 @@ const CATEGORIES = [
   { id: 'everything-else', label: 'EVERYTHING ELSE', Icon: PackageIcon, description: 'Furniture, instruments, tools, collectibles, art, appliances', useWebSearch: false },
 ];
 
-const REGION_GROUPS = [
-  {
-    label: 'ASIA-PACIFIC',
-    regions: [
-      { code: 'AU', name: 'Australia' },
-      { code: 'NZ', name: 'New Zealand' },
-      { code: 'SG', name: 'Singapore' },
-      { code: 'HK', name: 'Hong Kong' },
-      { code: 'IN', name: 'India' },
-      { code: 'PH', name: 'Philippines' },
-      { code: 'TH', name: 'Thailand' },
-      { code: 'KR', name: 'South Korea' },
-      { code: 'JP', name: 'Japan' },
-      { code: 'APAC', name: 'Asia-Pacific' },
-    ]
-  },
-  {
-    label: 'GLOBAL',
-    regions: [
-      { code: 'EU', name: 'Europe' },
-      { code: 'NA', name: 'Americas' },
-      { code: 'SA', name: 'South America' },
-      { code: 'MEA', name: 'Middle East & Africa' },
-    ]
-  }
+const REGIONS = [
+  { code: 'AU', name: 'Australia', beta: false },
+  { code: 'NZ', name: 'New Zealand', beta: false },
+  { code: 'SG', name: 'Singapore', beta: false },
+  { code: 'GLOBAL', name: 'Rest of the World', beta: true },
 ];
-
-const ALL_REGIONS = REGION_GROUPS.flatMap(g => g.regions);
 
 // ============================================
 // MAIN COMPONENT
@@ -129,7 +105,7 @@ const ALL_REGIONS = REGION_GROUPS.flatMap(g => g.regions);
 export default function ListingLensHome() {
   const [dark, setDark] = useState(false);
   const [cat, setCat] = useState<string | null>(null);
-  const [region, setRegion] = useState(ALL_REGIONS[0]);
+  const [region, setRegion] = useState(REGIONS[0]);
   const [showRegions, setShowRegions] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [img, setImg] = useState<string | null>(null);
@@ -243,14 +219,17 @@ export default function ListingLensHome() {
           <h2 style={{ fontSize: 52, fontWeight: 900, letterSpacing: '-0.03em', margin: '0 0 24px', lineHeight: 1 }}>
             BLIND<span style={{ color: '#3b82f6' }}>.</span>
           </h2>
-          <p style={{ fontSize: 18, fontWeight: 500, color: muted, marginBottom: 16 }}>
-            {"Your Personal Online Buyer\u2019s Advocate"}
+          <p style={{ fontSize: 20, fontWeight: 600, color: text, marginBottom: 12 }}>
+            One screenshot. Instant answers.
           </p>
-          <p style={{ color: muted, maxWidth: 440, margin: '0 auto 24px', lineHeight: 1.6 }}>
-            {"Screenshot any listing. Get the red flags, fair value, and questions you should be asking \u2014 for less than a cup of coffee."}
+          <p style={{ color: muted, maxWidth: 480, margin: '0 auto 20px', lineHeight: 1.6 }}>
+            {"Found something online? Upload the listing screenshot and we\u2019ll tell you what it\u2019s really worth, what\u2019s wrong with it, and exactly what to ask the seller."}
+          </p>
+          <p style={{ fontSize: 13, color: muted, maxWidth: 400, margin: '0 auto 24px', lineHeight: 1.5, fontStyle: 'italic' }}>
+            {"We'll read your screenshot, then search everywhere, owner forums, market data, and pricing guides \u2014 all in seconds."}
           </p>
           <p style={{ fontSize: 14, color: muted }}>
-            {"Instant Analysis \u00B7 No Account Needed \u00B7 "}
+            {"No account needed \u00B7 "}
             <button onClick={() => setShowModal(true)} style={{ color: '#3b82f6', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3, fontSize: 14 }}>
               How does this work?
             </button>
@@ -262,45 +241,49 @@ export default function ListingLensHome() {
           <p style={{ textAlign: 'center', fontSize: 13, fontWeight: 600, color: muted, marginBottom: 12, letterSpacing: '0.02em' }}>
             WHERE ARE YOU BUYING?
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
             <div style={{ position: 'relative' }} ref={ddRef}>
               <button
                 onClick={() => setShowRegions(!showRegions)}
                 style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, backgroundColor: cardBg, border: '1px solid ' + border, color: text, cursor: 'pointer', fontSize: 15, fontWeight: 500 }}
               >
-                <Flag region={region} size={20} />
+                <Flag code={region.code} name={region.name} size={20} />
                 <span>{region.name}</span>
+                {region.beta && (
+                  <span style={{ fontSize: 10, fontWeight: 700, backgroundColor: '#f59e0b', color: '#fff', padding: '2px 6px', borderRadius: 4, marginLeft: 4 }}>BETA</span>
+                )}
                 <ChevronDownIcon />
               </button>
               {showRegions && (
-                <div style={{ position: 'absolute', top: '100%', marginTop: 8, left: '50%', transform: 'translateX(-50%)', backgroundColor: cardBg, border: '1px solid ' + border, borderRadius: 12, boxShadow: '0 10px 40px rgba(0,0,0,0.25)', overflow: 'hidden', zIndex: 50, minWidth: 240, maxHeight: 420, overflowY: 'auto' }}>
-                  {REGION_GROUPS.map((group) => (
-                    <div key={group.label}>
-                      <div style={{ padding: '10px 16px 6px', fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: muted, textTransform: 'uppercase' }}>
-                        {group.label}
-                      </div>
-                      {group.regions.map((r) => (
-                        <button
-                          key={r.code}
-                          onClick={() => { setRegion(r); setShowRegions(false); }}
-                          style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', border: 'none', backgroundColor: region.code === r.code ? blue : 'transparent', color: region.code === r.code ? '#fff' : text, cursor: 'pointer', fontSize: 14, textAlign: 'left' }}
-                        >
-                          <Flag region={r} size={18} />
-                          <span>{r.name}</span>
-                        </button>
-                      ))}
-                    </div>
+                <div style={{ position: 'absolute', top: '100%', marginTop: 8, left: '50%', transform: 'translateX(-50%)', backgroundColor: cardBg, border: '1px solid ' + border, borderRadius: 12, boxShadow: '0 10px 40px rgba(0,0,0,0.25)', overflow: 'hidden', zIndex: 50, minWidth: 220 }}>
+                  {REGIONS.map((r) => (
+                    <button
+                      key={r.code}
+                      onClick={() => { setRegion(r); setShowRegions(false); }}
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', border: 'none', backgroundColor: region.code === r.code ? blue : 'transparent', color: region.code === r.code ? '#fff' : text, cursor: 'pointer', fontSize: 14, textAlign: 'left' }}
+                    >
+                      <Flag code={r.code} name={r.name} size={18} />
+                      <span style={{ flex: 1 }}>{r.name}</span>
+                      {r.beta && (
+                        <span style={{ fontSize: 9, fontWeight: 700, backgroundColor: region.code === r.code ? 'rgba(255,255,255,0.3)' : '#f59e0b', color: '#fff', padding: '2px 5px', borderRadius: 3 }}>BETA</span>
+                      )}
+                    </button>
                   ))}
                 </div>
               )}
             </div>
+            {region.beta && (
+              <p style={{ fontSize: 12, color: '#f59e0b', margin: 0, textAlign: 'center', maxWidth: 320 }}>
+                {"We're adding region-specific data monthly. Your report will use global sources."}
+              </p>
+            )}
           </div>
         </section>
 
         {/* CATEGORIES */}
         <section style={{ marginBottom: 32 }}>
           <h3 style={{ textAlign: 'center', fontWeight: 700, marginBottom: 16, color: muted, fontSize: 14, letterSpacing: '0.02em' }}>
-            WHAT ARE YOU LOOKING AT BUYING?
+            WHAT ARE YOU LOOKING AT?
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             {CATEGORIES.map((c) => {
@@ -338,8 +321,12 @@ export default function ListingLensHome() {
               ) : (
                 <>
                   <div style={{ color: muted, marginBottom: 16 }}><UploadIcon /></div>
-                  <p style={{ fontWeight: 500, marginBottom: 8 }}>Drop your screenshot here</p>
-                  <p style={{ fontSize: 14, color: muted }}>or click to browse</p>
+                  <p style={{ fontWeight: 600, marginBottom: 4, fontSize: 16 }}>Upload your screenshot</p>
+                  <p style={{ fontSize: 14, color: muted, marginBottom: 12 }}>Tap to select or drag and drop</p>
+                  <p style={{ fontSize: 12, color: muted, maxWidth: 280, margin: '0 auto', lineHeight: 1.5 }}>
+                    <CameraIcon size={14} />{" "}
+                    {"Screenshot the listing from any site \u2014 Carsales, Facebook, Gumtree, REA, anywhere"}
+                  </p>
                   <input ref={fileRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} />
                 </>
               )}
@@ -354,7 +341,7 @@ export default function ListingLensHome() {
               {busy ? step : 'ANALYZE THIS LISTING \u2192'}
             </button>
             <p style={{ textAlign: 'center', fontSize: 14, marginTop: 12, color: muted }}>
-              {"$4.99 AUD \u00B7 Full report in under 60 seconds"}
+              {"$4.99 AUD \u2014 less than a coffee, could save you thousands"}
             </p>
           </section>
         )}
@@ -373,8 +360,8 @@ export default function ListingLensHome() {
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ color: '#22c55e', display: 'flex', justifyContent: 'center', marginBottom: 8 }}><GlobeIcon /></div>
-            <p style={{ fontSize: 12, fontWeight: 600, margin: 0 }}>Global Coverage</p>
-            <p style={{ fontSize: 12, color: muted, margin: '4px 0 0' }}>14 regions</p>
+            <p style={{ fontSize: 12, fontWeight: 600, margin: 0 }}>Growing Global</p>
+            <p style={{ fontSize: 12, color: muted, margin: '4px 0 0' }}>New regions monthly</p>
           </div>
         </section>
       </main>
@@ -390,6 +377,7 @@ export default function ListingLensHome() {
               { label: 'API', href: '/partners' },
               { label: 'Privacy', href: '/privacy' },
               { label: 'Terms', href: '/terms' },
+              { label: 'Say Hello', href: '/contact' },
             ].map(l => (
               <a key={l.label} href={l.href} style={{ color: muted, textDecoration: 'none' }}>{l.label}</a>
             ))}
@@ -403,39 +391,68 @@ export default function ListingLensHome() {
       {/* HOW IT WORKS MODAL */}
       {showModal && (
         <div onClick={() => setShowModal(false)} style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ backgroundColor: cardBg, borderRadius: 16, maxWidth: 420, width: '100%', padding: 24, border: '1px solid ' + border, boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ backgroundColor: cardBg, borderRadius: 16, maxWidth: 480, width: '100%', maxHeight: '90vh', overflowY: 'auto', padding: 24, border: '1px solid ' + border, boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>How It Works</h3>
               <button onClick={() => setShowModal(false)} style={{ padding: 4, borderRadius: '50%', border: 'none', backgroundColor: 'transparent', color: text, cursor: 'pointer' }}>
                 <XIcon />
               </button>
             </div>
-            <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+            
+            {/* Step 1 */}
+            <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>1</div>
               <div>
                 <h4 style={{ fontWeight: 700, margin: 0 }}>Screenshot Any Listing</h4>
-                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"From Carsales, Facebook Marketplace, Gumtree, REA, OLX \u2014 anywhere."}</p>
+                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"From any online Marketplace, \u2014 anywhere."}</p>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+            
+            {/* Step 2 */}
+            <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>2</div>
               <div>
                 <h4 style={{ fontWeight: 700, margin: 0 }}>AI Analysis</h4>
                 <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>We extract the details, search market data, and identify red flags automatically.</p>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+            
+            {/* Step 3 */}
+            <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>3</div>
               <div>
                 <h4 style={{ fontWeight: 700, margin: 0 }}>Get Your Report</h4>
                 <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"Fair value estimate, questions to ask, negotiation tips \u2014 everything you need."}</p>
               </div>
             </div>
-            <div style={{ padding: 16, borderRadius: 12, backgroundColor: dark ? '#27272a' : '#f5f5f4', marginBottom: 24 }}>
+            
+            {/* Privacy Note */}
+            <div style={{ padding: 16, borderRadius: 12, backgroundColor: dark ? '#27272a' : '#f5f5f4', marginBottom: 20 }}>
               <p style={{ fontSize: 14, color: muted, margin: 0, lineHeight: 1.5 }}>
                 <strong style={{ color: text }}>Privacy First:</strong>{" Your screenshots are automatically deleted after 5 minutes. We never store or share your data."}
               </p>
             </div>
+
+            {/* FAQ: Does this really work? */}
+            <div style={{ marginBottom: 20 }}>
+              <h4 style={{ fontWeight: 700, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 18 }}>{"\u{1F4F8}"}</span> Does this really work from a single screenshot?
+              </h4>
+              <p style={{ fontSize: 13, color: muted, margin: 0, lineHeight: 1.6 }}>
+                {"Yes \u2014 and here's how. Our AI reads your screenshot the way a human expert would: it identifies the make, model, year, price, location, and every other detail visible in the listing. It then takes that information and searches real, publicly available sources \u2014 manufacturer recall databases, owner forums, review sites, market listings, and pricing guides \u2014 all in seconds. You'd find the same information yourself if you spent hours searching across dozens of websites. We just do it instantly."}
+              </p>
+            </div>
+
+            {/* FAQ: Does this scrape? */}
+            <div style={{ marginBottom: 24 }}>
+              <h4 style={{ fontWeight: 700, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 18 }}>{"\u{1F512}"}</span> Does this scrape websites or do anything dodgy?
+              </h4>
+              <p style={{ fontSize: 13, color: muted, margin: 0, lineHeight: 1.6 }}>
+                {"Absolutely not. Listing Lens does not scrape, crawl, or access any website in an unauthorised way. When we research your listing, our AI searches publicly available information the same way you would using a search engine \u2014 recall databases, owner forums, review sites, and market data that anyone can freely access. We don't log into any platform, bypass any paywalls, or collect anyone's personal data. Your screenshot is processed, your report is generated, and your image is automatically deleted within minutes. Your privacy isn't just a feature \u2014 it's how we built this from day one."}
+              </p>
+            </div>
+
             <button onClick={() => setShowModal(false)} style={{ width: '100%', padding: 12, backgroundColor: blue, color: '#fff', border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>
               Got It
             </button>
