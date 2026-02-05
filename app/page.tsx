@@ -294,11 +294,8 @@ export default function ListingLensHome() {
           <p style={{ fontSize: 20, fontWeight: 600, color: text, marginBottom: 12 }}>
             One screenshot. Instant answers.
           </p>
-          <p style={{ color: muted, maxWidth: 480, margin: '0 auto 20px', lineHeight: 1.6 }}>
+          <p style={{ color: muted, maxWidth: 480, margin: '0 auto 24px', lineHeight: 1.6 }}>
             {"Found something online? Upload the listing screenshot and we\u2019ll tell you what it\u2019s really worth, what\u2019s wrong with it, and exactly what to ask the seller."}
-          </p>
-          <p style={{ fontSize: 13, color: muted, maxWidth: 400, margin: '0 auto 24px', lineHeight: 1.5, fontStyle: 'italic' }}>
-            {"We'll read your screenshot, then search everywhere \u2014 owner forums, market data, and pricing guides \u2014 all in seconds."}
           </p>
           <p style={{ fontSize: 14, color: muted }}>
             {"No account needed \u00B7 "}
@@ -526,8 +523,8 @@ export default function ListingLensHome() {
             <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>2</div>
               <div>
-                <h4 style={{ fontWeight: 700, margin: 0 }}>AI Research</h4>
-                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"We search recalls, owner complaints, market prices, and spot red flags \u2014 all in seconds."}</p>
+                <h4 style={{ fontWeight: 700, margin: 0 }}>AI Searches Real Sources</h4>
+                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"Our AI researches actual data \u2014 manufacturer recalls, owner forums, market prices, review sites. It's not making things up; it's doing what would take you hours of Googling in seconds."}</p>
               </div>
             </div>
             
@@ -536,7 +533,7 @@ export default function ListingLensHome() {
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>3</div>
               <div>
                 <h4 style={{ fontWeight: 700, margin: 0 }}>Get Your Report</h4>
-                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"Fair value estimate, questions to ask, negotiation tips \u2014 everything you need."}</p>
+                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"Fair value estimate, questions to ask, negotiation tips \u2014 everything you need. We continuously monitor report quality and refine our research process to ensure accuracy."}</p>
               </div>
             </div>
             
@@ -557,14 +554,32 @@ export default function ListingLensHome() {
               </p>
             </div>
 
-            {/* FAQ: Does this work? */}
-            <div style={{ marginBottom: 24 }}>
-              <h4 style={{ fontWeight: 700, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 18 }}>{"\u{1F4F8}"}</span> Does this really work from a single screenshot?
-              </h4>
-              <p style={{ fontSize: 13, color: muted, margin: 0, lineHeight: 1.6 }}>
-                {"Yes. Our AI reads your screenshot like a human would \u2014 extracting make, model, year, price, and specs. Then it searches manufacturer recalls, owner forums, review sites, and market data in seconds. Same info you'd find after hours of Googling \u2014 just instant."}
+            {/* See How It Works Demo Link */}
+            <div style={{ padding: 16, borderRadius: 12, backgroundColor: dark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)', border: '1px solid ' + (dark ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.2)'), marginBottom: 24, textAlign: 'center' }}>
+              <p style={{ fontSize: 14, fontWeight: 600, color: text, margin: '0 0 8px' }}>
+                {"\u{1F3AC}"} Want to see it in action first?
               </p>
+              <p style={{ fontSize: 13, color: muted, margin: '0 0 12px', lineHeight: 1.5 }}>
+                Check out our live demo showing how we analyze a real listing from screenshot to full report.
+              </p>
+              <a 
+                href="/demo" 
+                style={{ 
+                  display: 'inline-block',
+                  padding: '8px 16px', 
+                  backgroundColor: blue, 
+                  color: '#fff', 
+                  borderRadius: 8, 
+                  textDecoration: 'none', 
+                  fontWeight: 600, 
+                  fontSize: 14,
+                  transition: 'opacity 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+              >
+                See How It Works →
+              </a>
             </div>
 
             <button onClick={() => setShowModal(false)} style={{ width: '100%', padding: 12, backgroundColor: blue, color: '#fff', border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>
