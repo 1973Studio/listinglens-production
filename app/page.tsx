@@ -2,19 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
-type Category = 'property' | 'motors' | 'marine' | 'aircraft' | 'electronics' | 'jewelry' | 'fashion' | 'furniture' | 'other' | null;
-
-// Category background images - Unsplash (free commercial use)
-const categoryImages: Record<string, string> = {
-  motors: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80',
-  property: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-  marine: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80',
-  aircraft: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800&q=80',
-  electronics: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80',
-  jewelry: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&q=80',
-  fashion: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=80',
-  furniture: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80',
-};
+type Category = 'vehicles' | 'property' | 'electronics' | 'fashion' | 'watches' | 'home' | 'other' | null;
 
 export default function ListingLens() {
   const [step, setStep] = useState(1);
@@ -33,7 +21,6 @@ export default function ListingLens() {
   const [darkMode, setDarkMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Check for dark mode preference
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -41,7 +28,6 @@ export default function ListingLens() {
     }
   }, []);
 
-  // --- CHECK FOR STRIPE RETURN ---
   useEffect(() => {
     window.scrollTo(0, 1);
     document.body.style.overscrollBehavior = 'none';
@@ -77,7 +63,7 @@ export default function ListingLens() {
       const savedRegionFlag = localStorage.getItem('ll_regionFlag');
       const savedPreview = localStorage.getItem('ll_preview');
 
-      setCategory(savedCategory || 'motors');
+      setCategory(savedCategory || 'vehicles');
       setRegion(savedRegion || 'AU');
       setRegionFlag(savedRegionFlag || '🇦🇺');
       setPreview(savedPreview);
@@ -86,12 +72,10 @@ export default function ListingLens() {
       setProcessingMessage('Payment verified. Generating your full report...');
 
       generateFullReport(sessionId, savedPreview || '');
-      
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
 
-  // --- GENERATE TEASER ---
   const generateTeaser = async (file: File) => {
     setIsProcessing(true);
     setProcessingMessage('Analyzing your listing...');
@@ -99,7 +83,7 @@ export default function ListingLens() {
     try {
       const formData = new FormData();
       formData.append("image", file);
-      formData.append("category", category || "motors");
+      formData.append("category", category || "vehicles");
       formData.append("region", region || "AU");
 
       const response = await fetch('/api/create-checkout', {
@@ -115,7 +99,7 @@ export default function ListingLens() {
       const data = await response.json();
       
       localStorage.setItem('ll_teaser', JSON.stringify(data.teaser));
-      localStorage.setItem('ll_category', category || 'motors');
+      localStorage.setItem('ll_category', category || 'vehicles');
       localStorage.setItem('ll_region', region);
       localStorage.setItem('ll_regionFlag', regionFlag);
       localStorage.setItem('ll_checkoutUrl', data.checkoutUrl);
@@ -133,16 +117,12 @@ export default function ListingLens() {
     }
   };
 
-  // --- GENERATE FULL REPORT ---
   const generateFullReport = async (sessionId: string, imageData: string) => {
     try {
       const response = await fetch('/api/complete-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          session_id: sessionId,
-          image: imageData
-        }),
+        body: JSON.stringify({ session_id: sessionId, image: imageData }),
       });
 
       if (response.status === 402) {
@@ -175,7 +155,6 @@ export default function ListingLens() {
     }
   };
 
-  // --- HANDLERS ---
   const handleCategorySelect = (cat: Category) => {
     setSelectedCategory(cat);
     setTimeout(() => {
@@ -205,9 +184,7 @@ export default function ListingLens() {
   };
 
   const handlePay = () => {
-    if (checkoutUrl) {
-      window.location.href = checkoutUrl;
-    }
+    if (checkoutUrl) window.location.href = checkoutUrl;
   };
 
   const reset = () => {
@@ -232,14 +209,12 @@ export default function ListingLens() {
 
   const getCategoryLabel = (cat: Category): string => {
     const labels: Record<string, string> = {
-      motors: 'Vehicle',
+      vehicles: 'Vehicle',
       property: 'Property',
-      marine: 'Marine',
-      aircraft: 'Aircraft',
       electronics: 'Electronics',
-      jewelry: 'Jewellery',
       fashion: 'Fashion',
-      furniture: 'Furniture',
+      watches: 'Watches & Jewellery',
+      home: 'Home & Equipment',
       other: 'Item'
     };
     return labels[cat || 'other'] || 'Item';
@@ -265,6 +240,7 @@ export default function ListingLens() {
           <button 
             onClick={() => setDarkMode(!darkMode)} 
             className={`p-2 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}
+            aria-label="Toggle dark mode"
           >
             {darkMode ? '☀️' : '🌙'}
           </button>
@@ -273,102 +249,82 @@ export default function ListingLens() {
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         
-        {/* ERROR DISPLAY */}
+        {/* ERROR */}
         {error && (
-          <div className={`w-full max-w-md mb-6 p-4 rounded-2xl text-center ${darkMode ? 'bg-red-900/50 border border-red-700' : 'bg-red-50 border border-red-200'}`}>
+          <div className={`w-full max-w-md mb-6 p-4 rounded-2xl text-center ${darkMode ? 'bg-red-900/50 border border-red-700' : 'bg-red-50 border border-red-200'}`} role="alert">
             <p className={`text-sm ${darkMode ? 'text-red-300' : 'text-red-700'}`}>{error}</p>
             <button onClick={() => { setError(null); reset(); }} className={`mt-2 text-xs underline ${darkMode ? 'text-red-400' : 'text-red-500'}`}>Start Over</button>
           </div>
         )}
 
-        {/* ============ STEP 1: HERO + CATEGORY ============ */}
+        {/* STEP 1: HERO + CATEGORY */}
         {step === 1 && (
           <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-8 duration-1000">
             <h1 className="text-5xl font-black tracking-tighter leading-[0.85] mb-4">DON'T BUY<br/>BLIND<span className="text-blue-600">.</span></h1>
             
             <div className="mb-8">
-              <p className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your AI-Powered Buyer's Advocate</p>
+              <p className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your Personal Online Buyer's Advocate</p>
               <p className={`text-xs leading-relaxed px-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                 Screenshot any listing. We'll research red flags, market value, and expert insights in seconds.
               </p>
             </div>
 
             <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-              Select Category
+              What are you looking at?
             </p>
 
-            {/* Premium Image-Backed Category Grid */}
+            {/* Simple Accessible Category Buttons */}
             <div className="grid grid-cols-2 gap-3 w-full mb-4">
               {[
-                { id: 'motors', label: 'Vehicles' },
+                { id: 'vehicles', label: 'Vehicles' },
                 { id: 'property', label: 'Property' },
-                { id: 'marine', label: 'Marine' },
-                { id: 'aircraft', label: 'Aircraft' },
                 { id: 'electronics', label: 'Electronics' },
-                { id: 'jewelry', label: 'Jewellery' },
                 { id: 'fashion', label: 'Fashion' },
-                { id: 'furniture', label: 'Furniture' },
+                { id: 'watches', label: 'Watches & Jewellery' },
+                { id: 'home', label: 'Home & Equipment' },
               ].map((item) => (
                 <button 
                   key={item.id} 
                   onClick={() => handleCategorySelect(item.id as Category)} 
-                  className={`relative overflow-hidden rounded-2xl h-24 group transition-all duration-300 ${
-                    selectedCategory === item.id ? 'scale-95 ring-2 ring-blue-500' : 'hover:scale-[1.02]'
+                  className={`rounded-2xl py-6 px-4 font-bold text-sm uppercase tracking-wide transition-all active:scale-95 border ${
+                    selectedCategory === item.id 
+                      ? 'bg-blue-600 border-blue-600 text-white scale-95' 
+                      : darkMode 
+                        ? 'bg-gray-800 border-gray-700 hover:border-blue-500' 
+                        : 'bg-white border-gray-200 hover:border-blue-500 shadow-sm'
                   }`}
                 >
-                  {/* Background Image */}
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                    style={{ backgroundImage: `url(${categoryImages[item.id]})` }}
-                  />
-                  
-                  {/* Dark Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/70 transition-all duration-300" />
-                  
-                  {/* Text */}
-                  <div className="absolute inset-0 flex items-end justify-start p-4">
-                    <span className="text-white font-black text-sm uppercase tracking-wider drop-shadow-lg">
-                      {item.label}
-                    </span>
-                  </div>
-                  
-                  {/* Subtle border */}
-                  <div className={`absolute inset-0 rounded-2xl border transition-colors ${
-                    selectedCategory === item.id 
-                      ? 'border-blue-500' 
-                      : 'border-white/10 group-hover:border-white/30'
-                  }`} />
+                  {item.label}
                 </button>
               ))}
             </div>
 
-            {/* Everything Else - Minimal/Text Only */}
+            {/* Everything Else */}
             <button 
               onClick={() => handleCategorySelect('other')} 
-              className={`w-full py-4 rounded-2xl font-medium text-sm tracking-wide border transition-all ${
+              className={`w-full py-4 rounded-2xl font-medium text-sm border transition-all active:scale-95 ${
                 selectedCategory === 'other' 
                   ? 'bg-blue-600 border-blue-600 text-white scale-95' 
                   : darkMode 
-                    ? 'border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white' 
-                    : 'border-gray-200 text-gray-400 hover:border-gray-400 hover:text-gray-700'
+                    ? 'border-gray-700 text-gray-400 hover:border-gray-500' 
+                    : 'border-gray-200 text-gray-400 hover:border-gray-400'
               }`}
             >
               Everything Else
             </button>
-            
             <p className={`text-[10px] mt-3 ${darkMode ? 'text-gray-600' : 'text-gray-300'}`}>
-              Collectibles · Instruments · Tools · Art · More
+              Collectibles · Art · Sports Gear · Anything
             </p>
           </div>
         )}
 
-        {/* ============ STEP 2: REGION ============ */}
+        {/* STEP 2: REGION */}
         {step === 2 && (
           <div className="w-full max-w-lg text-center animate-in fade-in slide-in-from-bottom-4">
             <h2 className="text-xl font-black tracking-tight mb-2">Where are you buying?</h2>
             <p className={`text-xs mb-8 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>We'll tailor market data to your region</p>
             
-            <div className="grid grid-cols-2 gap-3 md:gap-4 mb-8">
+            <div className="grid grid-cols-2 gap-3 mb-8">
               {[
                 { id: 'AU', flag: '🇦🇺', name: 'Australia' }, 
                 { id: 'NZ', flag: '🇳🇿', name: 'New Zealand' }, 
@@ -403,7 +359,7 @@ export default function ListingLens() {
           </div>
         )}
 
-        {/* ============ STEP 3: UPLOAD ============ */}
+        {/* STEP 3: UPLOAD */}
         {step === 3 && !isProcessing && (
           <div className="w-full max-w-md text-center animate-in fade-in">
             <h2 className="text-xl font-black tracking-tight mb-2">Upload Your Screenshot</h2>
@@ -444,7 +400,7 @@ export default function ListingLens() {
           </div>
         )}
 
-        {/* ============ PROCESSING STATE ============ */}
+        {/* PROCESSING */}
         {isProcessing && (
           <div className="w-full max-w-md text-center py-20 animate-in fade-in">
             <div className={`w-16 h-16 border-4 border-t-blue-600 rounded-full animate-spin mx-auto mb-6 ${darkMode ? 'border-gray-700' : 'border-gray-100'}`} />
@@ -452,18 +408,16 @@ export default function ListingLens() {
           </div>
         )}
 
-        {/* ============ STEP 4: TEASER + PAYWALL ============ */}
+        {/* STEP 4: TEASER + PAYWALL */}
         {step === 4 && teaserData && !isProcessing && (
           <div className="w-full max-w-lg animate-in fade-in slide-in-from-bottom-4">
             
-            {/* Screenshot Preview */}
             {preview && (
               <div className="mb-6">
                 <img src={preview} className={`w-full max-h-48 object-cover rounded-2xl border ${darkMode ? 'border-gray-700' : 'border-gray-100'}`} alt="Listing" />
               </div>
             )}
 
-            {/* Extracted Info Card */}
             <div className={`rounded-2xl p-6 mb-4 border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100 shadow-sm'}`}>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -482,7 +436,6 @@ export default function ListingLens() {
               </div>
             </div>
 
-            {/* Teaser Insights */}
             <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-6 rounded-2xl mb-4">
               <div className="flex items-center justify-between mb-4">
                 <p className="text-[10px] font-medium uppercase tracking-wider opacity-70">Initial Scan</p>
@@ -496,7 +449,6 @@ export default function ListingLens() {
               )}
             </div>
 
-            {/* Blurred Preview / Paywall */}
             <div className="relative mb-6">
               <div className="space-y-3 blur-xl opacity-30 pointer-events-none select-none">
                 <div className={`h-20 rounded-2xl ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`} />
@@ -527,7 +479,7 @@ export default function ListingLens() {
           </div>
         )}
 
-        {/* ============ STEP 5: GENERATING FULL REPORT ============ */}
+        {/* STEP 5: GENERATING */}
         {step === 5 && (
           <div className="w-full max-w-md text-center py-20 animate-in fade-in">
             <div className={`w-16 h-16 border-4 border-t-blue-600 rounded-full animate-spin mx-auto mb-6 ${darkMode ? 'border-gray-700' : 'border-gray-100'}`} />
@@ -536,11 +488,10 @@ export default function ListingLens() {
           </div>
         )}
 
-        {/* ============ STEP 6: FULL REPORT ============ */}
+        {/* STEP 6: FULL REPORT */}
         {step === 6 && reportData && (
           <div className="w-full max-w-lg space-y-4 animate-in fade-in">
             
-            {/* Header Card */}
             <div className="bg-black text-white p-6 rounded-2xl">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
@@ -565,23 +516,20 @@ export default function ListingLens() {
               </div>
             </div>
 
-            {/* Verdict */}
             <div className="bg-blue-600 text-white p-5 rounded-2xl">
               <p className="text-[9px] font-medium uppercase tracking-wider opacity-60 mb-1">Verdict</p>
               <p className="text-lg font-bold uppercase">{reportData.verdict?.recommendation || 'ANALYSIS COMPLETE'}</p>
               <p className="text-sm opacity-90 mt-2">{reportData.verdict?.summary}</p>
             </div>
 
-            {/* Market Analysis */}
             {reportData.marketAnalysis && (
               <div className={`p-5 rounded-2xl ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                <p className={`text-[9px] font-medium uppercase tracking-wider mb-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>Market Analysis</p>
+                <p className="text-[9px] font-medium uppercase tracking-wider mb-2 text-gray-500">Market Analysis</p>
                 <p className="text-sm font-medium mb-1">{reportData.marketAnalysis.pricePosition}</p>
                 <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{reportData.marketAnalysis.comparables}</p>
               </div>
             )}
 
-            {/* Authenticity Check */}
             {reportData.authenticityCheck && (
               <div className={`p-5 rounded-2xl border ${
                 reportData.authenticityCheck.riskLevel === 'HIGH' 
@@ -600,7 +548,6 @@ export default function ListingLens() {
               </div>
             )}
 
-            {/* Recalls */}
             {reportData.recalls && (
               <div className={`p-5 rounded-2xl border ${reportData.recalls.active 
                 ? darkMode ? 'bg-red-900/30 border-red-700' : 'bg-red-50 border-red-200'
@@ -613,7 +560,6 @@ export default function ListingLens() {
               </div>
             )}
 
-            {/* Concerns */}
             {reportData.concerns?.length > 0 && (
               <div className={`p-5 rounded-2xl border ${darkMode ? 'bg-red-900/20 border-red-800' : 'bg-red-50 border-red-100'}`}>
                 <p className="text-[9px] font-medium text-red-600 uppercase tracking-wider mb-3">Concerns</p>
@@ -632,7 +578,6 @@ export default function ListingLens() {
               </div>
             )}
 
-            {/* Positives */}
             {reportData.positives?.length > 0 && (
               <div className={`p-5 rounded-2xl border ${darkMode ? 'bg-green-900/20 border-green-800' : 'bg-green-50 border-green-100'}`}>
                 <p className="text-[9px] font-medium text-green-600 uppercase tracking-wider mb-3">Positives</p>
@@ -647,10 +592,9 @@ export default function ListingLens() {
               </div>
             )}
 
-            {/* Questions for Seller */}
             {reportData.questionsForSeller?.length > 0 && (
               <div className={`p-5 rounded-2xl border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
-                <p className={`text-[9px] font-medium uppercase tracking-wider mb-3 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>Ask the Seller</p>
+                <p className="text-[9px] font-medium uppercase tracking-wider mb-3 text-gray-500">Ask the Seller</p>
                 <ol className="space-y-2">
                   {reportData.questionsForSeller.map((q: string, i: number) => (
                     <li key={i} className={`text-sm flex items-start gap-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -662,7 +606,6 @@ export default function ListingLens() {
               </div>
             )}
 
-            {/* Negotiation Tips */}
             {reportData.negotiationTips?.length > 0 && (
               <div className={`p-5 rounded-2xl border ${darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-100'}`}>
                 <p className="text-[9px] font-medium text-blue-600 uppercase tracking-wider mb-3">Negotiation Leverage</p>
@@ -677,12 +620,8 @@ export default function ListingLens() {
               </div>
             )}
 
-            {/* Actions */}
             <div className="space-y-3 pt-4">
-              <button 
-                onClick={() => window.print()} 
-                className="w-full bg-black text-white py-4 rounded-xl font-bold text-sm"
-              >
+              <button onClick={() => window.print()} className="w-full bg-black text-white py-4 rounded-xl font-bold text-sm">
                 Save / Print Report
               </button>
               <button 
