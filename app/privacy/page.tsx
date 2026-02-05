@@ -9,14 +9,25 @@ export default function Privacy() {
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'} flex flex-col selection:bg-blue-100 transition-colors duration-300`}>
       
       {/* HEADER */}
-      <header className={`sticky top-0 ${darkMode ? 'bg-gray-900/90' : 'bg-white/90'} backdrop-blur-sm border-b ${darkMode ? 'border-gray-800' : 'border-gray-100'} px-6 py-4 flex justify-between items-center z-40`}>
-        <a href="/" className="flex items-center gap-3">
-          <span className={`text-sm font-black tracking-widest uppercase ${darkMode ? 'text-white' : ''}`}>LISTING LENS</span>
-        </a>
-        <div className="flex items-center gap-3">
+      <header 
+        className={`sticky top-0 z-50 ${
+          darkMode ? 'bg-gray-900/95' : 'bg-white/95'
+        } backdrop-blur-sm border-b ${
+          darkMode ? 'border-gray-800' : 'border-gray-100'
+        }`}
+      >
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <a href="/" className="flex flex-col gap-0.5 group transition-opacity hover:opacity-70">
+            <span className={`text-[10px] font-bold uppercase tracking-[0.15em] ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+              Advocate Mode
+            </span>
+            <span className={`text-base font-black uppercase tracking-[0.1em] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              LISTING LENS
+            </span>
+          </a>
           <button 
             onClick={() => setDarkMode(!darkMode)} 
-            className={`p-2 rounded-full transition-all ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-gray-100 text-gray-600'}`}
+            className={`p-2.5 rounded-full transition-all ${darkMode ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
             aria-label="Toggle dark mode"
           >
             {darkMode ? '☀️' : '🌙'}
@@ -109,7 +120,7 @@ export default function Privacy() {
           <div className={`p-8 rounded-[2rem] mb-10 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
             <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Data Retention</h2>
             <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              Screenshots you upload are processed in real-time and are not stored after your report is generated. Reports are delivered directly to you and are not retained on our servers. If you want to keep your report, save it or print it — we won't have a copy.
+              Screenshots you upload are processed in real-time and automatically deleted within 5 minutes. Reports are delivered directly to you and are not retained on our servers. If you want to keep your report, save it or print it — we won't have a copy.
             </p>
           </div>
 
@@ -139,15 +150,31 @@ export default function Privacy() {
       </main>
 
       {/* FOOTER */}
-      <footer className={`p-10 text-center border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-        <div className={`flex justify-center gap-8 text-sm font-black uppercase tracking-widest ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-6`}>
-          <a href="/faq" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>FAQ</a>
-          <a href="/pricing" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Pricing</a>
-          <a href="/about" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>About</a>
-          <a href="/contact" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Contact</a>
-          <a href="/partners" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>API</a>
+      <footer className={`border-t ${darkMode ? 'border-gray-800 bg-gray-900' : 'border-gray-100 bg-white'} py-8`}>
+        <div className="max-w-4xl mx-auto px-6">
+          <nav className="flex justify-center flex-wrap gap-6 mb-4">
+            {[
+              { label: 'FAQ', href: '/faq' },
+              { label: 'Pricing', href: '/pricing' },
+              { label: 'About', href: '/about' },
+              { label: 'API', href: '/partners' },
+              { label: 'Privacy', href: '/privacy' },
+              { label: 'Terms', href: '/terms' },
+              { label: 'Say Hello', href: '/contact' },
+            ].map(l => (
+              <a 
+                key={l.label} 
+                href={l.href} 
+                className={`text-sm font-medium transition-colors ${darkMode ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'}`}
+              >
+                {l.label}
+              </a>
+            ))}
+          </nav>
+          <p className={`text-center text-xs ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+            © 2026 Listing Lens
+          </p>
         </div>
-        <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs Pty Ltd</p>
       </footer>
     </div>
   );
