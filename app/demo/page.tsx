@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-function CheckIcon() {
-  return <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
-}
-
 function ArrowDownIcon() {
-  return <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>;
+  return (
+    <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <polyline points="19 12 12 19 5 12"/>
+    </svg>
+  );
 }
 
 export default function DemoPage() {
@@ -118,7 +119,7 @@ export default function DemoPage() {
                     color: muted,
                     fontStyle: 'italic'
                   }}>
-                    In production, you'd see an actual blurred listing image here
+                    In production, you would see an actual listing image here
                   </div>
                 </div>
               </div>
@@ -352,7 +353,7 @@ export default function DemoPage() {
                     'Can you provide the full service history showing all oil changes and maintenance?',
                     'Why is the vehicle priced $300-$1,700 above the market average for this model and mileage?',
                     'Are there any warning lights on the dashboard or known mechanical issues?',
-                    'Has the transmission been serviced according to Toyota's schedule?'
+                    'Has the transmission been serviced according to Toyota schedule?'
                   ].map((q, i) => (
                     <div key={i} style={{ 
                       padding: '12px 0', 
@@ -445,8 +446,7 @@ export default function DemoPage() {
               borderRadius: 12, 
               textDecoration: 'none', 
               fontWeight: 700, 
-              fontSize: 18,
-              transition: 'opacity 0.2s'
+              fontSize: 18
             }}
           >
             Analyze a Listing — $5
