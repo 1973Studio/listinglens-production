@@ -34,10 +34,10 @@ function ChevronDownIcon({ size = 16 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>;
 }
 function MoonIcon() {
-  return <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
+  return <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
 }
 function SunIcon() {
-  return <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
+  return <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
 }
 function ShieldIcon() {
   return <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>;
@@ -95,7 +95,7 @@ const REGIONS = [
   { code: 'AU', name: 'Australia', beta: false },
   { code: 'NZ', name: 'New Zealand', beta: false },
   { code: 'SG', name: 'Singapore', beta: false },
-  { code: 'GLOBAL', name: 'Rest of the World', beta: true },
+  { code: 'GLOBAL', name: 'Rest of World', beta: true },
 ];
 
 // ============================================
@@ -197,19 +197,80 @@ export default function ListingLensHome() {
     <div style={{ minHeight: '100vh', backgroundColor: bg, color: text, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', transition: 'all 0.3s' }}>
 
       {/* HEADER */}
-      <header style={{ position: 'sticky', top: 0, zIndex: 40, backgroundColor: cardBg, borderBottom: '1px solid ' + border }}>
-        <div style={{ maxWidth: 800, margin: '0 auto', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-            <p style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: muted, margin: 0 }}>Advocate Mode</p>
-            <h1 style={{ fontSize: 18, fontWeight: 800, margin: 0 }}>LISTING LENS</h1>
-          </div>
-          <button onClick={() => setDark(!dark)} style={{ padding: 8, borderRadius: '50%', border: 'none', backgroundColor: 'transparent', color: text, cursor: 'pointer' }}>
+      <header style={{ 
+        position: 'sticky', 
+        top: 0, 
+        zIndex: 50, 
+        backgroundColor: dark ? 'rgba(9, 9, 11, 0.95)' : 'rgba(250, 250, 249, 0.95)', 
+        backdropFilter: 'blur(8px)', 
+        borderBottom: '1px solid ' + border, 
+        transition: 'all 0.3s' 
+      }}>
+        <div style={{ 
+          maxWidth: 896, 
+          margin: '0 auto', 
+          padding: '16px 24px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between' 
+        }}>
+          <a 
+            href="/" 
+            style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 2, 
+              textDecoration: 'none', 
+              transition: 'opacity 0.2s' 
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+          >
+            <span style={{ 
+              fontSize: 10, 
+              fontWeight: 700, 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.15em', 
+              color: dark ? '#71717a' : '#78716c',
+              lineHeight: 1
+            }}>
+              Advocate Mode
+            </span>
+            <span style={{ 
+              fontSize: 16, 
+              fontWeight: 900, 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.1em', 
+              color: dark ? '#ffffff' : '#18181b',
+              lineHeight: 1
+            }}>
+              LISTING LENS
+            </span>
+          </a>
+          <button 
+            onClick={() => setDark(!dark)} 
+            style={{ 
+              padding: 10, 
+              borderRadius: '50%', 
+              border: 'none', 
+              backgroundColor: dark ? '#27272a' : '#f5f5f4', 
+              color: dark ? '#fbbf24' : '#52525b', 
+              cursor: 'pointer', 
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = dark ? '#3f3f46' : '#e7e5e4'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = dark ? '#27272a' : '#f5f5f4'}
+            aria-label="Toggle dark mode"
+          >
             {dark ? <SunIcon /> : <MoonIcon />}
           </button>
         </div>
       </header>
 
-      <main style={{ maxWidth: 800, margin: '0 auto', padding: '32px 16px' }}>
+      <main style={{ maxWidth: 896, margin: '0 auto', padding: '32px 24px' }}>
 
         {/* HERO */}
         <section style={{ textAlign: 'center', marginBottom: 40 }}>
@@ -226,7 +287,7 @@ export default function ListingLensHome() {
             {"Found something online? Upload the listing screenshot and we\u2019ll tell you what it\u2019s really worth, what\u2019s wrong with it, and exactly what to ask the seller."}
           </p>
           <p style={{ fontSize: 13, color: muted, maxWidth: 400, margin: '0 auto 24px', lineHeight: 1.5, fontStyle: 'italic' }}>
-            {"We'll read your screenshot, then search everywhere, owner forums, market data, and pricing guides \u2014 all in seconds."}
+            {"We'll read your screenshot, then search everywhere \u2014 owner forums, market data, and pricing guides \u2014 all in seconds."}
           </p>
           <p style={{ fontSize: 14, color: muted }}>
             {"No account needed \u00B7 "}
@@ -309,7 +370,19 @@ export default function ListingLensHome() {
             <div
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) onFile(f); }}
-              style={{ position: 'relative', border: '2px dashed ' + (img ? '#3b82f6' : border), borderRadius: 16, padding: 32, textAlign: 'center', backgroundColor: img ? 'rgba(59,130,246,0.08)' : 'transparent', transition: 'all 0.2s' }}
+              onMouseEnter={(e) => {
+                if (!img) {
+                  e.currentTarget.style.borderColor = '#3b82f6';
+                  e.currentTarget.style.backgroundColor = 'rgba(59,130,246,0.05)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!img) {
+                  e.currentTarget.style.borderColor = border;
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }
+              }}
+              style={{ position: 'relative', border: '2px dashed ' + (img ? '#3b82f6' : border), borderRadius: 16, padding: 32, textAlign: 'center', backgroundColor: img ? 'rgba(59,130,246,0.08)' : 'transparent', transition: 'all 0.2s', cursor: img ? 'default' : 'pointer' }}
             >
               {img ? (
                 <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -325,7 +398,7 @@ export default function ListingLensHome() {
                   <p style={{ fontSize: 14, color: muted, marginBottom: 12 }}>Tap to select or drag and drop</p>
                   <p style={{ fontSize: 12, color: muted, maxWidth: 280, margin: '0 auto', lineHeight: 1.5 }}>
                     <CameraIcon size={14} />{" "}
-                    {"Screenshot the listing from any online \u2014 marketplace anywhere"}
+                    {"Screenshot the listing from any marketplace \u2014 anywhere"}
                   </p>
                   <input ref={fileRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} />
                 </>
@@ -367,9 +440,20 @@ export default function ListingLensHome() {
       </main>
 
       {/* FOOTER */}
-      <footer style={{ backgroundColor: cardBg, borderTop: '1px solid ' + border, padding: '24px 0' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 24, fontSize: 14 }}>
+      <footer style={{ 
+        backgroundColor: cardBg, 
+        borderTop: '1px solid ' + border, 
+        padding: '32px 0',
+        transition: 'all 0.3s'
+      }}>
+        <div style={{ maxWidth: 896, margin: '0 auto', padding: '0 24px' }}>
+          <nav style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            flexWrap: 'wrap', 
+            gap: 24, 
+            marginBottom: 16 
+          }}>
             {[
               { label: 'FAQ', href: '/faq' },
               { label: 'Pricing', href: '/pricing' },
@@ -379,10 +463,29 @@ export default function ListingLensHome() {
               { label: 'Terms', href: '/terms' },
               { label: 'Say Hello', href: '/contact' },
             ].map(l => (
-              <a key={l.label} href={l.href} style={{ color: muted, textDecoration: 'none' }}>{l.label}</a>
+              <a 
+                key={l.label} 
+                href={l.href} 
+                style={{ 
+                  color: muted, 
+                  textDecoration: 'none', 
+                  fontSize: 14, 
+                  fontWeight: 500,
+                  transition: 'color 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = text}
+                onMouseLeave={(e) => e.currentTarget.style.color = muted}
+              >
+                {l.label}
+              </a>
             ))}
-          </div>
-          <p style={{ textAlign: 'center', fontSize: 12, marginTop: 16, color: muted }}>
+          </nav>
+          <p style={{ 
+            textAlign: 'center', 
+            fontSize: 12, 
+            color: muted,
+            margin: 0
+          }}>
             {"\u00A9 2026 Listing Lens"}
           </p>
         </div>
@@ -404,7 +507,7 @@ export default function ListingLensHome() {
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>1</div>
               <div>
                 <h4 style={{ fontWeight: 700, margin: 0 }}>Screenshot Any Listing</h4>
-                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"From any online Marketplace, \u2014 anywhere."}</p>
+                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"From any marketplace \u2014 anywhere."}</p>
               </div>
             </div>
             
@@ -412,8 +515,8 @@ export default function ListingLensHome() {
             <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>2</div>
               <div>
-                <h4 style={{ fontWeight: 700, margin: 0 }}>AI Analysis</h4>
-                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>We extract the details, search market data, and identify red flags automatically.</p>
+                <h4 style={{ fontWeight: 700, margin: 0 }}>AI Research</h4>
+                <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"We search recalls, owner complaints, market prices, and spot red flags \u2014 all in seconds."}</p>
               </div>
             </div>
             
@@ -429,27 +532,27 @@ export default function ListingLensHome() {
             {/* Privacy Note */}
             <div style={{ padding: 16, borderRadius: 12, backgroundColor: dark ? '#27272a' : '#f5f5f4', marginBottom: 20 }}>
               <p style={{ fontSize: 14, color: muted, margin: 0, lineHeight: 1.5 }}>
-                <strong style={{ color: text }}>Privacy First:</strong>{" Your screenshots are automatically deleted after 5 minutes. We never store or share your data."}
+                <strong style={{ color: text }}>Privacy First:</strong>{" Screenshots deleted after analysis (under 5 minutes). No accounts. No tracking. No data stored."}
               </p>
             </div>
 
-            {/* FAQ: Does this really work? */}
+            {/* FAQ: Is this legal? */}
             <div style={{ marginBottom: 20 }}>
+              <h4 style={{ fontWeight: 700, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 18 }}>{"\u{1F512}"}</span> Is this legal? Does it scrape websites?
+              </h4>
+              <p style={{ fontSize: 13, color: muted, margin: 0, lineHeight: 1.6 }}>
+                {"Absolutely. Listing Lens doesn't scrape, crawl, or access websites in unauthorized ways. We search publicly available information the same way you would \u2014 recall databases, owner forums, review sites, and market data anyone can access. We don't log into platforms, bypass paywalls, or collect personal data. Your screenshot is analyzed, your report is delivered, and your image is deleted. Privacy isn't a feature \u2014 it's how we built this."}
+              </p>
+            </div>
+
+            {/* FAQ: Does this work? */}
+            <div style={{ marginBottom: 24 }}>
               <h4 style={{ fontWeight: 700, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 18 }}>{"\u{1F4F8}"}</span> Does this really work from a single screenshot?
               </h4>
               <p style={{ fontSize: 13, color: muted, margin: 0, lineHeight: 1.6 }}>
-                {"Yes \u2014 and here's how. Our AI reads your screenshot the way a human expert would: it identifies the make, model, year, price, location, and every other detail visible in the listing. It then takes that information and searches real, publicly available sources \u2014 manufacturer recall databases, owner forums, review sites, market listings, and pricing guides \u2014 all in seconds. You'd find the same information yourself if you spent hours searching across dozens of websites. We just do it instantly."}
-              </p>
-            </div>
-
-            {/* FAQ: Does this scrape? */}
-            <div style={{ marginBottom: 24 }}>
-              <h4 style={{ fontWeight: 700, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 18 }}>{"\u{1F512}"}</span> Does this scrape websites or do anything dodgy?
-              </h4>
-              <p style={{ fontSize: 13, color: muted, margin: 0, lineHeight: 1.6 }}>
-                {"Absolutely not. Listing Lens does not scrape, crawl, or access any website in an unauthorised way. When we research your listing, our AI searches publicly available information the same way you would using a search engine \u2014 recall databases, owner forums, review sites, and market data that anyone can freely access. We don't log into any platform, bypass any paywalls, or collect anyone's personal data. Your screenshot is processed, your report is generated, and your image is automatically deleted within minutes. Your privacy isn't just a feature \u2014 it's how we built this from day one."}
+                {"Yes. Our AI reads your screenshot like a human would \u2014 extracting make, model, year, price, and specs. Then it searches manufacturer recalls, owner forums, review sites, and market data in seconds. Same info you'd find after hours of Googling \u2014 just instant."}
               </p>
             </div>
 
