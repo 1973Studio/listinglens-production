@@ -5,6 +5,10 @@ import React, { useState } from 'react';
 export default function Terms() {
   const [darkMode, setDarkMode] = useState(false);
 
+  const cardBg = darkMode ? '#18181b' : '#ffffff';
+  const border = darkMode ? '#27272a' : '#e7e5e4';
+  const muted = darkMode ? '#a1a1aa' : '#78716c';
+
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'} flex flex-col selection:bg-blue-100 transition-colors duration-300`}>
       
@@ -46,7 +50,7 @@ export default function Terms() {
             <div className={`p-8 rounded-[2rem] ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
               <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>1. What We Do</h2>
               <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Listing Lens provides AI-powered analysis of marketplace listings. You upload a screenshot, we extract information and research market data, known issues, and other relevant details to help you make informed purchasing decisions. Our reports cover vehicles, property, marine, and aircraft listings.
+                Listing Lens provides AI-powered analysis of marketplace listings. You upload a screenshot, we extract information and research market data, known issues, and other relevant details to help you make informed purchasing decisions. Our reports cover vehicles, property, electronics, fashion, watches & jewellery, and more.
               </p>
             </div>
 
@@ -153,15 +157,25 @@ export default function Terms() {
       </main>
 
       {/* FOOTER */}
-      <footer className={`p-10 text-center border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
-        <div className={`flex justify-center gap-8 text-sm font-black uppercase tracking-widest ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-6`}>
-          <a href="/faq" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>FAQ</a>
-          <a href="/pricing" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Pricing</a>
-          <a href="/about" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>About</a>
-          <a href="/contact" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Contact</a>
-          <a href="/partners" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>API</a>
+      <footer style={{ backgroundColor: cardBg, borderTop: '1px solid ' + border, padding: '24px 0' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 24, fontSize: 14 }}>
+            {[
+              { label: 'FAQ', href: '/faq' },
+              { label: 'Pricing', href: '/pricing' },
+              { label: 'About', href: '/about' },
+              { label: 'API', href: '/partners' },
+              { label: 'Privacy', href: '/privacy' },
+              { label: 'Terms', href: '/terms' },
+              { label: 'Say Hello', href: '/contact' },
+            ].map(l => (
+              <a key={l.label} href={l.href} style={{ color: muted, textDecoration: 'none' }}>{l.label}</a>
+            ))}
+          </div>
+          <p style={{ textAlign: 'center', fontSize: 12, marginTop: 16, color: muted }}>
+            © 2026 Listing Lens
+          </p>
         </div>
-        <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs Pty Ltd</p>
       </footer>
     </div>
   );
