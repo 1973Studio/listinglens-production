@@ -375,6 +375,7 @@ export default function ListingLensHome() {
               { label: 'FAQ', href: '/faq' },
               { label: 'Pricing', href: '/pricing' },
               { label: 'About', href: '/about' },
+              { label: 'Contact', href: '/contact' },
               { label: 'API', href: '/partners' },
               { label: 'Privacy', href: '/privacy' },
               { label: 'Terms', href: '/terms' },
