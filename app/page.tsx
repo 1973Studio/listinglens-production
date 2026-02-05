@@ -53,19 +53,31 @@ function GlobeIcon() {
 // FLAG COMPONENT
 // ============================================
 
-function Flag({ code, size = 20 }: { code: string; size?: number }) {
+function Flag({ region, size = 20 }: { region: { code: string; name: string }; size?: number }) {
   const flagMap: Record<string, string> = {
-    AU: 'au', NZ: 'nz', SG: 'sg', HK: 'hk', IN: 'in', PH: 'ph',
-    TH: 'th', KR: 'kr', JP: 'jp',
+    AU: 'au', NZ: 'nz', SG: 'sg', HK: 'hk', IN: 'in',
+    PH: 'ph', TH: 'th', KR: 'kr', JP: 'jp', EU: 'eu',
+    NA: 'us',
   };
-  const isoCode = flagMap[code];
-  if (isoCode) {
-    return <img src={`https://flagcdn.com/w40/${isoCode}.png`} alt={code} width={size} height={Math.round(size * 0.75)} style={{ borderRadius: 2, objectFit: 'cover' }} />;
+  const countryCode = flagMap[region.code];
+  if (countryCode) {
+    return (
+      <img
+        src={`https://flagcdn.com/w40/${countryCode}.png`}
+        alt={region.name}
+        width={size * 1.33}
+        height={size}
+        style={{ borderRadius: 2, objectFit: 'cover', display: 'inline-block', verticalAlign: 'middle' }}
+      />
+    );
   }
-  const emojiMap: Record<string, string> = {
-    APAC: '\u{1F30F}', EU: '\u{1F30D}', NA: '\u{1F30E}', SA: '\u{1F30E}', MEA: '\u{1F30D}',
+  // Globe emoji fallback for catch-all regions
+  const globes: Record<string, string> = {
+    APAC: '\u{1F30F}',
+    SA: '\u{1F30E}',
+    MEA: '\u{1F30D}',
   };
-  return <span style={{ fontSize: size }}>{emojiMap[code] || '\u{1F30D}'}</span>;
+  return <span style={{ fontSize: size, lineHeight: 1, verticalAlign: 'middle' }}>{globes[region.code] || '\u{1F310}'}</span>;
 }
 
 // ============================================
