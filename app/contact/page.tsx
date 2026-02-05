@@ -12,7 +12,7 @@ export default function Contact() {
     const formData = new FormData(form);
     
     try {
-      await fetch('/', {
+      await fetch('/__forms.html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(formData as any).toString(),
@@ -76,9 +76,6 @@ export default function Contact() {
             /* CONTACT FORM */
             <form 
               name="contact" 
-              method="POST" 
-              data-netlify="true"
-              netlify-honeypot="bot-field"
               onSubmit={handleSubmit}
               className="space-y-4"
             >
@@ -198,7 +195,7 @@ export default function Contact() {
           <a href="/privacy" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Privacy</a>
           <a href="/terms" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Terms</a>
         </div>
-        <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs Pty Ltd</p>
+        <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs </p>
       </footer>
     </div>
   );
