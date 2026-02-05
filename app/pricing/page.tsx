@@ -51,8 +51,9 @@ export default function Pricing() {
           {/* PRICING CARD */}
           <div className={`p-8 rounded-[2rem] border-2 mb-8 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
             <p className={`text-xs font-black uppercase tracking-widest mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Per Report</p>
-            <p className={`text-6xl font-black mb-2 ${darkMode ? 'text-white' : ''}`}>$4.99</p>
-            <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'} mb-8`}>AUD · Less than a cup of coffee ☕</p>
+            <p className={`text-6xl font-black mb-2 ${darkMode ? 'text-white' : ''}`}>$5</p>
+            <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'} mb-2`}>In your local currency</p>
+            <p className={`text-xs ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-8`}>$5 AUD • $5 USD • £5 GBP • €5 EUR • $5 NZD • $5 SGD</p>
             
             <div className={`text-left space-y-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               <p className="flex items-center gap-3"><span className="text-green-500">✓</span> Full market value analysis</p>
@@ -77,6 +78,14 @@ export default function Pricing() {
             <p className={`font-bold text-sm mb-2 ${darkMode ? 'text-white' : ''}`}>No account required</p>
             <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
               Upload a screenshot, pay securely via Stripe, get your report instantly. We don't ask for your email or any personal details.
+            </p>
+          </div>
+
+          {/* WHY $5 EVERYWHERE */}
+          <div className={`mt-8 p-6 rounded-2xl border-2 ${darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-100'}`}>
+            <p className="text-xs font-black text-blue-600 uppercase tracking-[0.2em] mb-3">Fair Pricing, Globally</p>
+            <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              We charge $5 in your local currency — not a converted price. Whether you're in Sydney, San Francisco, or Singapore, you pay the same simple amount. Fair is fair.
             </p>
           </div>
 
