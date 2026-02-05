@@ -325,7 +325,7 @@ export default function ListingLensHome() {
                   <p style={{ fontSize: 14, color: muted, marginBottom: 12 }}>Tap to select or drag and drop</p>
                   <p style={{ fontSize: 12, color: muted, maxWidth: 280, margin: '0 auto', lineHeight: 1.5 }}>
                     <CameraIcon size={14} />{" "}
-                    {"Screenshot the listing from any site \u2014 Carsales, Facebook, Gumtree, REA, anywhere"}
+                    {"Screenshot the listing from any online \u2014 marketplace anywhere"}
                   </p>
                   <input ref={fileRef} type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} />
                 </>
