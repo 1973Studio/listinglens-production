@@ -3,4 +3,4 @@
   publish = ".next"
 
 [build.environment]
-  NETLIFY_NEXTJS_SKIP_PREPROCESS_FORMS = "true"
+  NODE_VERSION = "18"
