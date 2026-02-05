@@ -228,13 +228,24 @@ export default function ListingLensHome() {
           >
             <span style={{ 
               fontSize: 10, 
-              fontWeight: 700, 
+              fontWeight: 600, 
               textTransform: 'uppercase', 
               letterSpacing: '0.15em', 
               color: dark ? '#71717a' : '#78716c',
-              lineHeight: 1
+              lineHeight: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6
             }}>
-              Advocate Mode
+              <span style={{ 
+                width: 6, 
+                height: 6, 
+                borderRadius: '50%', 
+                backgroundColor: '#22c55e',
+                boxShadow: '0 0 8px rgba(34, 197, 94, 0.5)',
+                animation: 'pulse 2s ease-in-out infinite'
+              }} />
+              Online
             </span>
             <span style={{ 
               fontSize: 16, 
@@ -414,7 +425,7 @@ export default function ListingLensHome() {
               {busy ? step : 'ANALYZE THIS LISTING \u2192'}
             </button>
             <p style={{ textAlign: 'center', fontSize: 14, marginTop: 12, color: muted }}>
-              {"$4.99 AUD \u2014 less than a coffee, could save you thousands"}
+              {"$5 in your currency \u2014 could save you thousands"}
             </p>
           </section>
         )}
