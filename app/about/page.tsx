@@ -74,9 +74,9 @@ export default function About() {
 
           {/* WHO WE ARE */}
           <div className={`p-8 rounded-[2rem] mb-8 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Who We Are</h2>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Why We Built This</h2>
             <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              Listing Lens is built by Listing Lens Labs Pty Ltd, based in Canberra, Australia. We're a small team who got tired of seeing mates get burned buying cars and boats online.
+              Listing Lens started with a simple frustration: buying a used car and realising there had to be a better way than just trusting everything the seller was telling me.
             </p>
             <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               We believe everyone deserves access to the kind of research that used to require hours of Googling or expensive professional advice. Now it takes seconds and costs less than a coffee.
@@ -103,11 +103,11 @@ export default function About() {
           <a href="/pricing" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Pricing</a>
           <a href="/about" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>About</a>
           <a href="/contact" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Contact</a>
-          <a href="/partners" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>API</a>
+          <a href="/api" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>API</a>
           <a href="/privacy" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Privacy</a>
           <a href="/terms" className={`${darkMode ? 'hover:text-white' : 'hover:text-black'} transition-colors`}>Terms</a>
         </div>
-        <p className={`text-xs font-bold ${darkMode ? 'text-gray-700' : 'text-gray-300'} uppercase tracking-widest`}>© 2026 Listing Lens Labs Pty Ltd</p>
+        <p className={`text-xs ${darkMode ? 'text-gray-700' : 'text-gray-300'}`}>© 2026 Listing Lens</p>
       </footer>
     </div>
   );
