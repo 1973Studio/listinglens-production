@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -51,6 +50,25 @@ function GlobeIcon() {
 }
 
 // ============================================
+// FLAG COMPONENT
+// ============================================
+
+function Flag({ code, size = 20 }: { code: string; size?: number }) {
+  const flagMap: Record<string, string> = {
+    AU: 'au', NZ: 'nz', SG: 'sg', HK: 'hk', IN: 'in', PH: 'ph',
+    TH: 'th', KR: 'kr', JP: 'jp',
+  };
+  const isoCode = flagMap[code];
+  if (isoCode) {
+    return <img src={`https://flagcdn.com/w40/${isoCode}.png`} alt={code} width={size} height={Math.round(size * 0.75)} style={{ borderRadius: 2, objectFit: 'cover' }} />;
+  }
+  const emojiMap: Record<string, string> = {
+    APAC: '\u{1F30F}', EU: '\u{1F30D}', NA: '\u{1F30E}', SA: '\u{1F30E}', MEA: '\u{1F30D}',
+  };
+  return <span style={{ fontSize: size }}>{emojiMap[code] || '\u{1F30D}'}</span>;
+}
+
+// ============================================
 // CONFIG
 // ============================================
 
@@ -67,25 +85,25 @@ const REGION_GROUPS = [
   {
     label: 'ASIA-PACIFIC',
     regions: [
-      { code: 'AU', name: 'Australia', flag: '\u{1F1E6}\u{1F1FA}' },
-      { code: 'NZ', name: 'New Zealand', flag: '\u{1F1F3}\u{1F1FF}' },
-      { code: 'SG', name: 'Singapore', flag: '\u{1F1F8}\u{1F1EC}' },
-      { code: 'HK', name: 'Hong Kong', flag: '\u{1F1ED}\u{1F1F0}' },
-      { code: 'IN', name: 'India', flag: '\u{1F1EE}\u{1F1F3}' },
-      { code: 'PH', name: 'Philippines', flag: '\u{1F1F5}\u{1F1ED}' },
-      { code: 'TH', name: 'Thailand', flag: '\u{1F1F9}\u{1F1ED}' },
-      { code: 'KR', name: 'South Korea', flag: '\u{1F1F0}\u{1F1F7}' },
-      { code: 'JP', name: 'Japan', flag: '\u{1F1EF}\u{1F1F5}' },
-      { code: 'APAC', name: 'Asia-Pacific', flag: '\u{1F30F}' },
+      { code: 'AU', name: 'Australia' },
+      { code: 'NZ', name: 'New Zealand' },
+      { code: 'SG', name: 'Singapore' },
+      { code: 'HK', name: 'Hong Kong' },
+      { code: 'IN', name: 'India' },
+      { code: 'PH', name: 'Philippines' },
+      { code: 'TH', name: 'Thailand' },
+      { code: 'KR', name: 'South Korea' },
+      { code: 'JP', name: 'Japan' },
+      { code: 'APAC', name: 'Asia-Pacific' },
     ]
   },
   {
     label: 'GLOBAL',
     regions: [
-      { code: 'EU', name: 'Europe', flag: '\u{1F1EA}\u{1F1FA}' },
-      { code: 'NA', name: 'Americas', flag: '\u{1F1FA}\u{1F1F8}' },
-      { code: 'SA', name: 'South America', flag: '\u{1F30E}' },
-      { code: 'MEA', name: 'Middle East & Africa', flag: '\u{1F30D}' },
+      { code: 'EU', name: 'Europe' },
+      { code: 'NA', name: 'Americas' },
+      { code: 'SA', name: 'South America' },
+      { code: 'MEA', name: 'Middle East & Africa' },
     ]
   }
 ];
@@ -238,7 +256,7 @@ export default function ListingLensHome() {
                 onClick={() => setShowRegions(!showRegions)}
                 style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, backgroundColor: cardBg, border: '1px solid ' + border, color: text, cursor: 'pointer', fontSize: 15, fontWeight: 500 }}
               >
-                <span style={{ fontSize: 22 }}>{region.flag}</span>
+                <Flag code={region.code} size={22} />
                 <span>{region.name}</span>
                 <ChevronDownIcon />
               </button>
@@ -255,7 +273,7 @@ export default function ListingLensHome() {
                           onClick={() => { setRegion(r); setShowRegions(false); }}
                           style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', border: 'none', backgroundColor: region.code === r.code ? blue : 'transparent', color: region.code === r.code ? '#fff' : text, cursor: 'pointer', fontSize: 14, textAlign: 'left' }}
                         >
-                          <span style={{ fontSize: 20 }}>{r.flag}</span>
+                          <Flag code={r.code} size={20} />
                           <span>{r.name}</span>
                         </button>
                       ))}
@@ -365,7 +383,7 @@ export default function ListingLensHome() {
             ))}
           </div>
           <p style={{ textAlign: 'center', fontSize: 12, marginTop: 16, color: muted }}>
-            {"Powered by Claude Sonnet 4 \u00B7 \u00A9 2026 Listing Lens"}
+            {"\u00A9 2026 Listing Lens"}
           </p>
         </div>
       </footer>
@@ -373,13 +391,15 @@ export default function ListingLensHome() {
       {/* HOW IT WORKS MODAL */}
       {showModal && (
         <div onClick={() => setShowModal(false)} style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ backgroundColor: cardBg, borderRadius: 16, maxWidth: 420, width: '100%', padding: 24, border: '1px solid ' + border, boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ backgroundColor: cardBg, borderRadius: 16, maxWidth: 480, width: '100%', padding: 24, border: '1px solid ' + border, boxShadow: '0 20px 60px rgba(0,0,0,0.3)', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>How It Works</h3>
               <button onClick={() => setShowModal(false)} style={{ padding: 4, borderRadius: '50%', border: 'none', backgroundColor: 'transparent', color: text, cursor: 'pointer' }}>
                 <XIcon />
               </button>
             </div>
+
+            {/* STEP 1 */}
             <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>1</div>
               <div>
@@ -387,6 +407,8 @@ export default function ListingLensHome() {
                 <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"From Carsales, Facebook Marketplace, Gumtree, REA, OLX \u2014 anywhere."}</p>
               </div>
             </div>
+
+            {/* STEP 2 */}
             <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>2</div>
               <div>
@@ -394,6 +416,8 @@ export default function ListingLensHome() {
                 <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>We extract the details, search market data, and identify red flags automatically.</p>
               </div>
             </div>
+
+            {/* STEP 3 */}
             <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0, fontSize: 14 }}>3</div>
               <div>
@@ -401,11 +425,37 @@ export default function ListingLensHome() {
                 <p style={{ fontSize: 14, color: muted, margin: '4px 0 0', lineHeight: 1.5 }}>{"Fair value estimate, questions to ask, negotiation tips \u2014 everything you need."}</p>
               </div>
             </div>
+
+            {/* PRIVACY BOX */}
             <div style={{ padding: 16, borderRadius: 12, backgroundColor: dark ? '#27272a' : '#f5f5f4', marginBottom: 24 }}>
               <p style={{ fontSize: 14, color: muted, margin: 0, lineHeight: 1.5 }}>
                 <strong style={{ color: text }}>Privacy First:</strong>{" Your screenshots are automatically deleted after 5 minutes. We never store or share your data."}
               </p>
             </div>
+
+            {/* DIVIDER */}
+            <div style={{ height: 1, backgroundColor: border, margin: '0 0 24px' }} />
+
+            {/* FAQ: SINGLE SCREENSHOT */}
+            <div style={{ marginBottom: 24 }}>
+              <h4 style={{ fontWeight: 700, margin: '0 0 8px', fontSize: 15 }}>
+                {"\u{1F4F8}"} Does this really work from a single screenshot?
+              </h4>
+              <p style={{ fontSize: 14, color: muted, margin: 0, lineHeight: 1.6 }}>
+                {"Yes \u2014 and here\u2019s how. Our AI reads your screenshot the way a human expert would: it identifies the make, model, year, price, location, and every other detail visible in the listing. It then takes that information and searches real, publicly available sources \u2014 manufacturer recall databases, owner forums, review sites, market listings, and pricing guides \u2014 all in seconds. You\u2019d find the same information yourself if you spent hours searching across dozens of websites. We just do it instantly."}
+              </p>
+            </div>
+
+            {/* FAQ: SCRAPING / LEGALITY */}
+            <div style={{ marginBottom: 24 }}>
+              <h4 style={{ fontWeight: 700, margin: '0 0 8px', fontSize: 15 }}>
+                {"\u{1F512}"} Does this scrape websites or do anything dodgy?
+              </h4>
+              <p style={{ fontSize: 14, color: muted, margin: 0, lineHeight: 1.6 }}>
+                {"Absolutely not. Listing Lens does not scrape, crawl, or access any website in an unauthorised way. When we research your listing, our AI searches publicly available information the same way you would using a search engine \u2014 recall databases, owner forums, review sites, and market data that anyone can freely access. We don\u2019t log into any platform, bypass any paywalls, or collect anyone\u2019s personal data. Your screenshot is processed, your report is generated, and your image is automatically deleted within minutes. Your privacy isn\u2019t just a feature \u2014 it\u2019s how we built this from day one."}
+              </p>
+            </div>
+
             <button onClick={() => setShowModal(false)} style={{ width: '100%', padding: 12, backgroundColor: blue, color: '#fff', border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>
               Got It
             </button>
