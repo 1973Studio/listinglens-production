@@ -4,6 +4,19 @@ import React, { useState } from 'react';
 
 export default function FAQ() {
   const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      setDarkMode(saved === 'true');
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('darkMode', String(newMode));
+  };
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const faqCategories = [
@@ -109,7 +122,7 @@ export default function FAQ() {
             </span>
           </a>
           <button 
-            onClick={() => setDarkMode(!darkMode)} 
+            onClick={toggleDarkMode} 
             className={`p-2.5 rounded-full transition-all ${darkMode ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
             aria-label="Toggle dark mode"
           >
@@ -225,6 +238,7 @@ export default function FAQ() {
               { label: 'FAQ', href: '/faq' },
               { label: 'Pricing', href: '/pricing' },
               { label: 'About', href: '/about' },
+              { label: 'Demo', href: '/demo' },
               { label: 'API', href: '/partners' },
               { label: 'Privacy', href: '/privacy' },
               { label: 'Terms', href: '/terms' },
