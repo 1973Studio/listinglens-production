@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 
 export default function About() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('darkMode');
-    if (saved !== null) {
-      setDarkMode(saved === 'true');
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('darkMode');
+      return saved === 'true';
     }
-  }, []);
+    return false;
+  });
+
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
@@ -19,12 +19,12 @@ export default function About() {
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'} flex flex-col selection:bg-blue-100 transition-colors duration-300`}>
+    <div className={`min-h-screen ${darkMode ? 'bg-zinc-950' : 'bg-white'} flex flex-col selection:bg-blue-100 transition-colors duration-300`}>
       
       {/* HEADER - Consistent across all pages */}
       <header 
         className={`sticky top-0 z-50 ${
-          darkMode ? 'bg-gray-900/95' : 'bg-white/95'
+          darkMode ? 'bg-zinc-950/95' : 'bg-white/95'
         } backdrop-blur-sm border-b ${
           darkMode ? 'border-gray-800' : 'border-gray-100'
         }`}
@@ -122,7 +122,7 @@ export default function About() {
       </main>
 
       {/* FOOTER - Consistent across all pages */}
-      <footer className={`border-t ${darkMode ? 'border-gray-800 bg-gray-900' : 'border-gray-100 bg-white'} py-8`}>
+      <footer className={`border-t ${darkMode ? 'border-gray-800 bg-zinc-950' : 'border-gray-100 bg-white'} py-8`}>
         <div className="max-w-4xl mx-auto px-6">
           <nav className="flex justify-center flex-wrap gap-6 mb-4">
             {[
