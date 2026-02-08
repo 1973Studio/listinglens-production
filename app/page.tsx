@@ -291,7 +291,7 @@ export default function ListingLensHome() {
           <h2 style={{ fontSize: 52, fontWeight: 900, letterSpacing: '-0.03em', margin: '0 0 24px', lineHeight: 1 }}>
             BLIND<span style={{ color: '#3b82f6' }}>.</span>
           </h2>
-          <p style={{ fontSize: 20, fontWeight: 600, color: text, marginBottom: 12 }}>
+          <p style={{ fontSize: 20, fontWeight: 600, color: '#3b82f6', marginBottom: 12 }}>
             One screenshot. Instant answers.
           </p>
           <p style={{ color: muted, maxWidth: 480, margin: '0 auto 24px', lineHeight: 1.6 }}>
@@ -446,6 +446,20 @@ export default function ListingLensHome() {
           </div>
         </section>
       </main>
+
+      {/* BLUE SEPARATOR LINE */}
+      <div style={{ 
+        maxWidth: 896, 
+        margin: '0 auto', 
+        padding: '0 24px'
+      }}>
+        <div style={{
+          height: 4,
+          backgroundColor: blue,
+          borderRadius: 2,
+          margin: '64px 0'
+        }} />
+      </div>
 
       {/* FOOTER */}
       <footer style={{ 
