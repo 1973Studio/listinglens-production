@@ -16,9 +16,21 @@ export default function DemoPage() {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDarkMode(isDark);
+    // Check localStorage first, then system preference
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      setDarkMode(saved === 'true');
+    } else {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setDarkMode(isDark);
+    }
   }, []);
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('darkMode', String(newMode));
+  };
 
   const bg = darkMode ? '#09090b' : '#fafaf9';
   const text = darkMode ? '#fafafa' : '#18181b';
@@ -49,6 +61,24 @@ export default function DemoPage() {
               LISTING LENS
             </span>
           </Link>
+          <button 
+            onClick={toggleDarkMode}
+            style={{ 
+              padding: 10, 
+              borderRadius: '50%', 
+              border: 'none', 
+              backgroundColor: darkMode ? '#27272a' : '#f5f5f4', 
+              color: darkMode ? '#fbbf24' : '#52525b', 
+              cursor: 'pointer', 
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
         </div>
       </header>
 
@@ -465,6 +495,8 @@ export default function DemoPage() {
             <Link href="/faq" style={{ color: muted, textDecoration: 'none' }}>FAQ</Link>
             <Link href="/pricing" style={{ color: muted, textDecoration: 'none' }}>Pricing</Link>
             <Link href="/about" style={{ color: muted, textDecoration: 'none' }}>About</Link>
+            <Link href="/demo" style={{ color: muted, textDecoration: 'none' }}>Demo</Link>
+            <Link href="/partners" style={{ color: muted, textDecoration: 'none' }}>API</Link>
             <Link href="/privacy" style={{ color: muted, textDecoration: 'none' }}>Privacy</Link>
             <Link href="/terms" style={{ color: muted, textDecoration: 'none' }}>Terms</Link>
             <Link href="/contact" style={{ color: muted, textDecoration: 'none' }}>Say Hello</Link>
