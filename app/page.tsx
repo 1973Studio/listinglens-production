@@ -103,7 +103,14 @@ const REGIONS = [
 // ============================================
 
 export default function ListingLensHome() {
-  const [dark, setDark] = useState(false);
+  // Lazy initialization - reads localStorage ONCE on mount, prevents flash
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('darkMode');
+      return saved === 'true';
+    }
+    return false;
+  });
   const [cat, setCat] = useState<string | null>(null);
   const [region, setRegion] = useState(REGIONS[0]);
   const [showRegions, setShowRegions] = useState(false);
@@ -114,14 +121,6 @@ export default function ListingLensHome() {
   const [step, setStep] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
   const ddRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Load dark mode from localStorage
-    const saved = localStorage.getItem('darkMode');
-    if (saved !== null) {
-      setDark(saved === 'true');
-    }
-  }, []);
 
   const toggleDark = () => {
     const newMode = !dark;
