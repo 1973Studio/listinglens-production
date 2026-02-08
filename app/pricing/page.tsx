@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-export default function Pricing() {
+export default function Privacy() {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -49,65 +49,116 @@ export default function Pricing() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-6 py-16">
+      <main className="flex-1 flex flex-col items-center px-6 py-16">
         
-        <div className="w-full max-w-lg text-center">
+        <div className="w-full max-w-2xl">
           
           {/* HERO */}
-          <p className="text-xs font-black text-blue-600 uppercase tracking-[0.3em] mb-4">Pricing</p>
-          <h1 className={`text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-6 ${darkMode ? 'text-white' : ''}`}>
-            Simple<span className="text-blue-600">.</span><br/>Transparent.
-          </h1>
-          <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-12`}>
-            No subscriptions. No hidden fees. Pay only for what you use.
-          </p>
-
-          {/* PRICING CARD */}
-          <div className={`p-8 rounded-[2rem] border-2 mb-8 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
-            <p className={`text-xs font-black uppercase tracking-widest mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Per Report</p>
-            <p className={`text-6xl font-black mb-2 ${darkMode ? 'text-white' : ''}`}>$5</p>
-            <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'} mb-2`}>In your local currency</p>
-            <p className={`text-xs ${darkMode ? 'text-gray-600' : 'text-gray-400'} mb-8`}>$5 AUD • $5 USD • £5 GBP • €5 EUR • $5 NZD • $5 SGD</p>
-            
-            <div className={`text-left space-y-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              <p className="flex items-center gap-3"><span className="text-green-500">✓</span> Full market value analysis</p>
-              <p className="flex items-center gap-3"><span className="text-green-500">✓</span> Known issues & recalls</p>
-              <p className="flex items-center gap-3"><span className="text-green-500">✓</span> Owner insights & complaints</p>
-              <p className="flex items-center gap-3"><span className="text-green-500">✓</span> Red flags & concerns</p>
-              <p className="flex items-center gap-3"><span className="text-green-500">✓</span> Questions to ask the seller</p>
-              <p className="flex items-center gap-3"><span className="text-green-500">✓</span> Negotiation strategy</p>
-              <p className="flex items-center gap-3"><span className="text-green-500">✓</span> Visual analysis</p>
-            </div>
-
-            <a 
-              href="/"
-              className="block w-full mt-8 bg-blue-600 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 transition-all text-center"
-            >
-              Get Started
-            </a>
-          </div>
-
-          {/* NO ACCOUNT */}
-          <div className={`p-6 rounded-2xl ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-            <p className={`font-bold text-sm mb-2 ${darkMode ? 'text-white' : ''}`}>No account required</p>
-            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Upload a screenshot, pay securely via Stripe, get your report instantly. We don't ask for your email or any personal details.
+          <div className="text-center mb-12">
+            <p className="text-xs font-black text-blue-600 uppercase tracking-[0.3em] mb-4">Privacy Policy</p>
+            <h1 className={`text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-6 ${darkMode ? 'text-white' : ''}`}>
+              Privacy First<span className="text-blue-600">.</span><br/>By Design.
+            </h1>
+            <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              We built Listing Lens to know as little about you as possible. Here's exactly what we collect — and what we don't.
             </p>
           </div>
 
-          {/* WHY $5 EVERYWHERE */}
-          <div className={`mt-8 p-6 rounded-2xl border-2 ${darkMode ? 'bg-blue-900/20 border-blue-800' : 'bg-blue-50 border-blue-100'}`}>
-            <p className="text-xs font-black text-blue-600 uppercase tracking-[0.2em] mb-3">Fair Pricing, Globally</p>
+          {/* THE DIFFERENCE */}
+          <div className={`p-8 rounded-[2rem] mb-10 ${darkMode ? 'bg-blue-900/20 border border-blue-800' : 'bg-blue-50 border border-blue-100'}`}>
+            <h2 className="text-xs font-black text-blue-600 uppercase tracking-[0.2em] mb-4">Why We're Different</h2>
             <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              We charge $5 in your local currency — not a converted price. Whether you're in Sydney, San Francisco, or Singapore, you pay the same simple amount. Fair is fair.
+              Most websites demand your email before you can do anything. They want you to "Sign in with Google" or create an account just to see a price. We think that's backwards. You came here to analyse a listing, not to hand over your personal data. So we don't ask for it.
             </p>
           </div>
 
-          {/* BULK / API */}
-          <div className="mt-8">
-            <p className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'} mb-2`}>Need volume pricing or API access?</p>
-            <a href="/partners" className="text-blue-600 font-bold text-sm hover:underline">View Partner Options →</a>
+          {/* WHAT WE DON'T COLLECT */}
+          <div className={`p-8 rounded-[2rem] mb-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>What We Don't Collect</h2>
+            <div className="space-y-4">
+              {[
+                { item: 'Your name', note: 'We never ask for it' },
+                { item: 'Your email address', note: 'No account required' },
+                { item: 'Your phone number', note: 'Not needed' },
+                { item: 'Your uploaded screenshots', note: 'Processed and discarded' },
+                { item: 'Your generated reports', note: 'Not stored on our servers' },
+                { item: 'Your payment card details', note: 'Handled entirely by Stripe' },
+                { item: 'Tracking cookies', note: 'No third-party trackers' },
+              ].map((row, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-green-500 text-lg">✗</span>
+                  <span className={`font-bold ${darkMode ? 'text-white' : ''}`}>{row.item}</span>
+                  <span className={`text-sm ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>— {row.note}</span>
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* WHAT WE DO COLLECT */}
+          <div className={`p-8 rounded-[2rem] mb-10 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-6 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>What We Do Collect</h2>
+            <div className="space-y-6">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-blue-500 text-lg">•</span>
+                  <span className={`font-bold ${darkMode ? 'text-white' : ''}`}>IP Address</span>
+                </div>
+                <p className={`text-sm ml-7 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Collected automatically when you visit any website. We use this for basic security, abuse prevention, and to understand which countries our users come from (in aggregate). We don't link it to any personal identity.
+                </p>
+              </div>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-blue-500 text-lg">•</span>
+                  <span className={`font-bold ${darkMode ? 'text-white' : ''}`}>Basic Analytics</span>
+                </div>
+                <p className={`text-sm ml-7 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Page views and general usage patterns to help us improve the service. No personal identification.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* STRIPE */}
+          <div className={`p-8 rounded-[2rem] mb-10 border-2 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Payment Processing</h2>
+            <p className={`text-sm leading-relaxed mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              When you purchase a report, you're redirected to <strong>Stripe</strong> — a trusted, PCI-compliant payment processor used by millions of businesses worldwide. Stripe collects your payment details directly. We never see your card number, and Stripe doesn't share your personal information with us.
+            </p>
+            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              For more information, see <a href="https://stripe.com/au/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Stripe's Privacy Policy</a>.
+            </p>
+          </div>
+
+          {/* DATA RETENTION */}
+          <div className={`p-8 rounded-[2rem] mb-10 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Data Retention</h2>
+            <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Screenshots you upload are processed in real-time and automatically deleted within 5 minutes. Reports are delivered directly to you and are not retained on our servers. If you want to keep your report, save it or print it — we won't have a copy.
+            </p>
+          </div>
+
+          {/* FUTURE CHANGES */}
+          <div className={`p-8 rounded-[2rem] mb-10 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <h2 className={`text-xs font-black uppercase tracking-[0.2em] mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Future Features</h2>
+            <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              We may introduce optional accounts in the future for users who want to save their reports. This will always be opt-in. If we ever change how we handle data, we'll update this policy and make it clear.
+            </p>
+          </div>
+
+          {/* CONTACT */}
+          <div className="text-center">
+            <h2 className={`text-lg font-black mb-2 ${darkMode ? 'text-white' : ''}`}>Questions?</h2>
+            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-4`}>
+              If you have any questions about our privacy practices, get in touch.
+            </p>
+            <a href="mailto:hello@listinglens.app" className="text-blue-600 font-bold text-sm">hello@listinglens.app</a>
+          </div>
+
+          {/* LAST UPDATED */}
+          <p className={`text-center text-xs mt-12 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+            Last updated: February 2026
+          </p>
 
         </div>
       </main>
