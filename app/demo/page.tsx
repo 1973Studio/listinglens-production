@@ -13,18 +13,13 @@ function ArrowDownIcon() {
 }
 
 export default function DemoPage() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    // Check localStorage first, then system preference
-    const saved = localStorage.getItem('darkMode');
-    if (saved !== null) {
-      setDarkMode(saved === 'true');
-    } else {
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setDarkMode(isDark);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('darkMode');
+      return saved === 'true';
     }
-  }, []);
+    return false;
+  });
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
