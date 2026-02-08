@@ -116,6 +116,20 @@ export default function ListingLensHome() {
   const ddRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Load dark mode from localStorage
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      setDark(saved === 'true');
+    }
+  }, []);
+
+  const toggleDark = () => {
+    const newMode = !dark;
+    setDark(newMode);
+    localStorage.setItem('darkMode', String(newMode));
+  };
+
+  useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (ddRef.current && !ddRef.current.contains(e.target as Node)) {
         setShowRegions(false);
@@ -259,7 +273,7 @@ export default function ListingLensHome() {
             </span>
           </a>
           <button 
-            onClick={() => setDark(!dark)} 
+            onClick={toggleDark} 
             style={{ 
               padding: 10, 
               borderRadius: '50%', 
@@ -480,6 +494,7 @@ export default function ListingLensHome() {
               { label: 'FAQ', href: '/faq' },
               { label: 'Pricing', href: '/pricing' },
               { label: 'About', href: '/about' },
+              { label: 'Demo', href: '/demo' },
               { label: 'API', href: '/partners' },
               { label: 'Privacy', href: '/privacy' },
               { label: 'Terms', href: '/terms' },
@@ -564,7 +579,7 @@ export default function ListingLensHome() {
                 <span style={{ fontSize: 18 }}>{"\u{1F512}"}</span> Is this legal? Does it scrape websites?
               </h4>
               <p style={{ fontSize: 13, color: muted, margin: 0, lineHeight: 1.6 }}>
-                {"Absolutely. Listing Lens doesn't scrape, crawl, or access websites in unauthorized ways. We search publicly available information the same way you would \u2014 recall databases, owner forums, review sites, and market data anyone can access. We don't log into platforms, bypass paywalls, or collect personal data. Your screenshot is analyzed, your report is delivered, and your image is deleted. Privacy isn't a feature \u2014 it's how we built this."}
+                {"Yes, it's completely legal. Listing Lens doesn't scrape, crawl, or access websites in unauthorized ways. We search publicly available information the same way you would \u2014 recall databases, owner forums, review sites, and market data anyone can access. We don't log into platforms, bypass paywalls, or collect personal data. Your screenshot is analyzed, your report is delivered, and your image is deleted. Privacy isn't a feature \u2014 it's how we built this."}
               </p>
             </div>
 
