@@ -5,6 +5,19 @@ import React, { useState } from 'react';
 export default function About() {
   const [darkMode, setDarkMode] = useState(false);
 
+  useEffect(() => {
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      setDarkMode(saved === 'true');
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('darkMode', String(newMode));
+  };
+
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'} flex flex-col selection:bg-blue-100 transition-colors duration-300`}>
       
@@ -18,15 +31,16 @@ export default function About() {
       >
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <a href="/" className="flex flex-col gap-0.5 group transition-opacity hover:opacity-70">
-            <span className={`text-[10px] font-bold uppercase tracking-[0.15em] ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-              Advocate Mode
+            <span className={`text-[10px] font-semibold uppercase tracking-[0.15em] ${darkMode ? 'text-gray-500' : 'text-stone-500'} flex items-center gap-1.5`}>
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500" style={{ boxShadow: '0 0 8px rgba(34, 197, 94, 0.5)' }} />
+              Online
             </span>
             <span className={`text-base font-black uppercase tracking-[0.1em] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               LISTING LENS
             </span>
           </a>
           <button 
-            onClick={() => setDarkMode(!darkMode)} 
+            onClick={toggleDarkMode} 
             className={`p-2.5 rounded-full transition-all ${darkMode ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
             aria-label="Toggle dark mode"
           >
@@ -115,6 +129,7 @@ export default function About() {
               { label: 'FAQ', href: '/faq' },
               { label: 'Pricing', href: '/pricing' },
               { label: 'About', href: '/about' },
+              { label: 'Demo', href: '/demo' },
               { label: 'API', href: '/partners' },
               { label: 'Privacy', href: '/privacy' },
               { label: 'Terms', href: '/terms' },
