@@ -578,7 +578,7 @@ export default function ListingLensHome() {
                 <span style={{ fontSize: 18 }}>{"\u{1F512}"}</span> Is this legal? Does it scrape websites?
               </h4>
               <p style={{ fontSize: 13, color: muted, margin: 0, lineHeight: 1.6 }}>
-                {"Yes, it's completely legal. Listing Lens doesn't scrape, crawl, or access websites in unauthorized ways. We search publicly available information the same way you would \u2014 recall databases, owner forums, review sites, and market data anyone can access. We don't log into platforms, bypass paywalls, or collect personal data. Your screenshot is analyzed, your report is delivered, and your image is deleted. Privacy isn't a feature \u2014 it's how we built this."}
+                {"It's completely legal. Listing Lens doesn't scrape, crawl, or access websites in unauthorized ways. We search publicly available information the same way you would \u2014 recall databases, owner forums, review sites, and market data anyone can access. We don't log into platforms, bypass paywalls, or collect personal data. Your screenshot is analyzed, your report is delivered, and your image is deleted. Privacy isn't a feature \u2014 it's how we built this."}
               </p>
             </div>
 
