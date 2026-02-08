@@ -165,7 +165,7 @@ export default function Terms() {
             <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} mb-4`}>
               If anything's unclear, just ask.
             </p>
-            <a href="mailto:hello@listinglens.app" className="text-blue-600 font-bold text-sm">hello@listinglens.app</a>
+
           </div>
 
           {/* LAST UPDATED */}
